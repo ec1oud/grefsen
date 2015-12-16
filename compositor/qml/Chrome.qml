@@ -29,8 +29,8 @@ Item {
 
     property alias destroyAnimation : destroyAnimationImpl
 
-    property int marginWidth : 3
-    property int titlebarHeight : 25
+    property int marginWidth : surfaceItem.isPopup ? 1 : 3
+    property int titlebarHeight : surfaceItem.isPopup ? 0 : 25
 
     height: surfaceItem.height + marginWidth + titlebarHeight
     width: surfaceItem.width + 2 * marginWidth
@@ -78,6 +78,7 @@ Item {
                     if (edges & 4)
                         h += mouse.y - pressY
                     rootChrome.requestSize(w, h)
+                    console.log("resize " + rootChrome + " " + rootChrome.x + ", ", rootChrome.y)
                 }
             }
         }
@@ -89,6 +90,7 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             height: titlebarHeight - marginWidth
+            visible: !surfaceItem.isPopup
 
             LinearGradient {
                 anchors.fill: parent
@@ -118,6 +120,8 @@ Item {
             }
 
             MouseArea {
+                id: closeButton
+                visible: !surfaceItem.isTransient
                 height: 20
                 width: 25
                 anchors.margins: marginWidth
@@ -144,7 +148,6 @@ Item {
                 }
             }
         }
-
     }
     function requestSize(w, h) {
         //console.log("request size " + w + ", " + h)
@@ -176,16 +179,49 @@ Item {
         }
     ]
 
+    function findItemForSurface(surface) {
+        var result = undefined
+        var n = defaultOutput.surfaceArea.children.length
+        var i = 0
+        for (i = 0; i < n; i++) {
+            var item = defaultOutput.surfaceArea.children[i]
+            if (item.surface === surface) {
+                result = item;
+                break;
+            }
+        }
+        return result
+    }
+
     ShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
+        property bool isPopup: false
+        property bool isTransient: false
 
         opacity: moveArea.drag.active ? 0.5 : 1.0
 
         x: marginWidth
         y: titlebarHeight
 
+
         property var shellSurface: ShellSurface {
+            function moveRelativeToSurface(surface, relativePositon) {
+                var item = findItemForSurface(surface)
+                if (item !== undefined) {
+                    rootChrome.x = relativePositon.x + item.x
+                    rootChrome.y = relativePositon.y + item.y  + item.titlebarHeight
+                }
+            }
+
+            onSetPopup: {
+                surfaceItem.isPopup = true
+                moveRelativeToSurface(parentSurface, relativeToParent)
+            }
+            onSetTransient: {
+                surfaceItem.isTransient = true
+                moveRelativeToSurface(parentSurface, relativeToParent)
+            }
         }
         onSurfaceDestroyed: {
             view.bufferLock = true;
@@ -198,7 +234,7 @@ Item {
                 console.log(shellSurface.title + " surface size: " + surface.size + " curs: " + surface.cursorSurface + " valid: " + surfaceItem.valid)
             }
         }
-        onValidChanged: if (valid) createAnimationImpl.start()
+        onValidChanged: if (valid && !isPopup) createAnimationImpl.start()
     }
 
 }

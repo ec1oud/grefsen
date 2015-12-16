@@ -76,10 +76,5 @@ WaylandOutput {
                 inputDevice: output.compositor.defaultInputDevice
             }
         }
-        // TODO remove this and make it work from ~/.config/screen.qml
-        Shortcut {
-            sequence: "Ctrl+Alt+Backspace"
-            onActivated: Qt.quit()
-        }
     }
 }

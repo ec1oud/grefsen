@@ -11,7 +11,6 @@ Image {
         Text { color: "white"; text: "boo!" }
     }
 
-    // TODO doesn't seem to work
     Shortcut {
         sequence: "Ctrl+Alt+Backspace"
         onActivated: Qt.quit()

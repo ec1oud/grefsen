@@ -62,7 +62,81 @@
 #include "qobjectlistmodel.h"
 #include "stackableitem.h"
 
+#include <errno.h>
+#include <signal.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <sys/prctl.h>
+
 static QLatin1String glassPaneName("glassPane");
+
+static QByteArray grefsonExecutablePath;
+static qint64 grefsonPID;
+static void *signalHandlerStack;
+
+extern "C" void signalHandler(int signal)
+{
+#ifdef Q_WS_X11
+    // Kill window since it's frozen anyway.
+    if (QX11Info::display())
+        close(ConnectionNumber(QX11Info::display()));
+#endif
+    pid_t pid = fork();
+    switch (pid) {
+    case -1: // error
+        break;
+    case 0: // child
+        kill(grefsonPID, 9);
+        fprintf(stderr, "crashed (PID %d): respawn %s\n", grefsonPID, grefsonExecutablePath.constData());
+        execl(grefsonExecutablePath.constData(), grefsonExecutablePath.constData(), (char *) 0);
+        _exit(EXIT_FAILURE);
+    default: // parent
+        prctl(PR_SET_PTRACER, pid, 0, 0, 0);
+        waitpid(pid, 0, 0);
+        _exit(EXIT_FAILURE);
+        break;
+    }
+}
+
+static void setupSignalHandler()
+{
+    // Setup an alternative stack for the signal handler. This way we are able to handle SIGSEGV
+    // even if the normal process stack is exhausted.
+    stack_t ss;
+    ss.ss_sp = signalHandlerStack = malloc(SIGSTKSZ); // Usual requirements for alternative signal stack.
+    if (ss.ss_sp == 0) {
+        qWarning("Warning: Could not allocate space for alternative signal stack (%s).", Q_FUNC_INFO);
+        return;
+    }
+    ss.ss_size = SIGSTKSZ;
+    ss.ss_flags = 0;
+    if (sigaltstack(&ss, 0) == -1) {
+        qWarning("Warning: Failed to set alternative signal stack (%s).", Q_FUNC_INFO);
+        return;
+    }
+
+    // Install signal handler.
+    struct sigaction sa;
+    if (sigemptyset(&sa.sa_mask) == -1) {
+        qWarning("Warning: Failed to empty signal set (%s).", Q_FUNC_INFO);
+        return;
+    }
+    sa.sa_handler = &signalHandler;
+    // SA_RESETHAND - Restore signal action to default after signal handler has been called.
+    // SA_NODEFER - Don't block the signal after it was triggered (otherwise blocked signals get
+    // inherited via fork() and execve()). Without this the signal will not be delivered to the
+    // restarted Qt Creator.
+    // SA_ONSTACK - Use alternative stack.
+    sa.sa_flags = SA_RESETHAND | SA_NODEFER | SA_ONSTACK;
+    // See "man 7 signal" for an overview of signals.
+    // Do not add SIGPIPE here, QProcess and QTcpSocket use it.
+    const int signalsToHandle[] = { SIGILL, SIGABRT, SIGFPE, SIGSEGV, SIGBUS, 0 };
+    for (int i = 0; signalsToHandle[i]; ++i)
+        if (sigaction(signalsToHandle[i], &sa, 0) == -1)
+            qWarning("Failed to install signal handler for signal \"%s\"", strsignal(signalsToHandle[i]));
+}
 
 static void registerTypes()
 {
@@ -83,6 +157,10 @@ int main(int argc, char *argv[])
     if (!qEnvironmentVariableIsSet("QT_XCB_GL_INTEGRATION"))
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl"); // use xcomposite-glx if no EGL
     QGuiApplication app(argc, argv);
+    grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
+    grefsonPID = QCoreApplication::applicationPid();
+
+    setupSignalHandler();
 
     if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
         qWarning("failed to load FontAwesome from resources - "

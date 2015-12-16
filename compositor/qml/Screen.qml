@@ -48,22 +48,22 @@ WaylandOutput {
 
         property QtObject output
 
-        width: 1024
-        height: 760
+        width: 1024; height: 768
         visible: true
+
+        Image {
+            id: background
+            anchors.fill: parent
+            fillMode: Image.Tile
+            source: "qrc:/images/background.jpg"
+            smooth: true
+        }
 
         WaylandMouseTracker {
             id: mouseTracker
             anchors.fill: parent
 
             enableWSCursor: true
-            Image {
-                id: background
-                anchors.fill: parent
-                fillMode: Image.Tile
-                source: "qrc:/images/background.jpg"
-                smooth: true
-            }
             WaylandCursorItem {
                 id: cursor
                 inputEventsEnabled: false

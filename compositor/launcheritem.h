@@ -24,7 +24,7 @@
 #include <QBasicTimer>
 
 // Define this if you'd like to see debug messages from the launcher
-#define DEBUG_LAUNCHER
+//#define DEBUG_LAUNCHER
 #ifdef DEBUG_LAUNCHER
 #include <QDebug>
 #define LAUNCHER_DEBUG(things) qDebug() << Q_FUNC_INFO << things

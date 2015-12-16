@@ -13,6 +13,8 @@ MouseArea {
     property string icon: ""
     Image {
         source: "image://icon/" + icon
+        sourceSize.width: 64
+        sourceSize.height: 64
         anchors.centerIn: parent
     }
     onClicked: if (path) launcher.launch(path); else console.log("nothing to launch")

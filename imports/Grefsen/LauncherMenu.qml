@@ -1,13 +1,14 @@
 import QtQuick 2.5
 import org.nemomobile.lipstick 0.1
 import Qt.labs.controls 1.0
-//import Grefson 1.0
+import Grefsen 1.0 as Grefsen
 
-Item {
+Grefsen.HoverArea {
     id: root
     width: 612
     height: 1080
     signal close
+    onExited: root.close()
 
     Rectangle {
         anchors.fill: parent

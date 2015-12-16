@@ -3,8 +3,6 @@
 ** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt-project.org/legal
 **
-** This file is part of the examples of the Qt Toolkit.
-**
 ** $QT_BEGIN_LICENSE:BSD$
 ** You may use this file under the terms of the BSD license as follows:
 **
@@ -38,7 +36,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.5
+import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtWayland.Compositor 1.0
 

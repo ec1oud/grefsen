@@ -9,6 +9,8 @@ Image {
     Grefsen.LeftSlidePanel {
         id: leftPanel
 
+        Grefsen.LauncherMenuIcon { }
+
         Grefsen.LauncherIcon {
             // TODO need an image provider for icons, use desktop file etc.
             path: "/usr/bin/konsole"
@@ -19,10 +21,6 @@ Image {
             sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all
             onActivated: leftPanel.toggle()
         }
-    }
-
-    Grefsen.LauncherMenu {
-        anchors.fill: parent
     }
 
     Shortcut {

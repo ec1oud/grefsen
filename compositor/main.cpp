@@ -44,13 +44,21 @@
 #include <QtGui/QGuiApplication>
 
 #include <QtQml/QQmlApplicationEngine>
-
+#include <QtQml/qqml.h>
 #include <QDebug>
 #include <QDir>
+
+#include "processlauncher.h"
+
+static void registerTypes()
+{
+    qmlRegisterType<WaylandProcessLauncher>("com.theqtcompany.wlprocesslauncher", 1, 0, "ProcessLauncher");
+}
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    registerTypes();
 
     QQmlApplicationEngine appEngine;
     // TODO make this work...

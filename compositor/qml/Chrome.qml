@@ -41,7 +41,7 @@ Item {
         anchors.fill: parent
         border.width: 1
         radius: marginWidth
-        border.color: "#305070a0"
+        border.color: (resizeArea.pressed || resizeArea.containsMouse) ? "#ffc02020" :"#305070a0"
         color: "#50ffffff"
 
 
@@ -50,6 +50,36 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             //cursorShape: Qt.SizeFDiagCursor
+            property int pressX
+            property int pressY
+            property int startW
+            property int startH
+            property bool pressed: false
+
+            //bitfield: top, left, bottom, right
+            property int edges
+            onPressed: {
+                pressed = true
+                edges = 0
+                pressX = mouse.x; pressY = mouse.y
+                startW = rootChrome.width; startH = rootChrome.height
+                if (mouse.y > rootChrome.height - titlebarHeight)
+                    edges |= 4 //bottom edge
+                if (mouse.x > rootChrome.width - titlebarHeight)
+                    edges |= 8 //right edge
+            }
+            onReleased: pressed = false
+            onMouseXChanged: {
+                if (pressed) {
+                    var w = startW
+                    var h = startH
+                    if (edges & 8)
+                        w += mouse.x - pressX
+                    if (edges & 4)
+                        h += mouse.y - pressY
+                    rootChrome.requestSize(w, h)
+                }
+            }
         }
 
         Item {
@@ -72,7 +102,7 @@ Item {
 
             Text {
                 color: "gray"
-                text: "Titlebar"
+                text: surfaceItem.shellSurface.title
                 anchors.margins: marginWidth
 
                 anchors.left: parent.left
@@ -83,6 +113,7 @@ Item {
                 id: moveArea
                 anchors.fill: parent
                 drag.target: rootChrome
+                hoverEnabled: true
                 //cursorShape: Qt.OpenHandCursor
             }
 
@@ -116,7 +147,8 @@ Item {
 
     }
     function requestSize(w, h) {
-        surfaceItem.requestSize(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth))
+        //console.log("request size " + w + ", " + h)
+        surfaceItem.shellSurface.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), ShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {

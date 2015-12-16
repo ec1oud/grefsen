@@ -48,6 +48,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFontDatabase>
+#include <QQmlContext>
+#include <QQuickItem>
 
 #include "iconprovider.h"
 #include "launcherfiltermodel.h"
@@ -58,8 +60,9 @@
 #include "launcherwatchermodel.h"
 #include "processlauncher.h"
 #include "qobjectlistmodel.h"
-
 #include "stackableitem.h"
+
+static QLatin1String glassPaneName("glassPane");
 
 static void registerTypes()
 {
@@ -93,6 +96,9 @@ int main(int argc, char *argv[])
     appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
     appEngine.addImageProvider(QLatin1String("icon"), new IconProvider);
     appEngine.load(QUrl("qrc:///qml/main.qml"));
+
+    appEngine.rootContext()->setContextProperty(glassPaneName,
+        appEngine.rootObjects().first()->findChild<QQuickItem*>(glassPaneName));
 
 //    if (app.arguments().contains(QLatin1String("-f"))) ... TODO find the window, make it fullscreen
 

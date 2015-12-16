@@ -53,6 +53,12 @@ WaylandOutput {
                     source: "file://" + Grefsen.env.home + ".config/grefsen/screen.qml"
                 }
             }
+
+            Item {
+                id: glassPane
+                objectName: "glassPane"
+                anchors.fill: parent
+            }
         }
     }
 }

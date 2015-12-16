@@ -19,7 +19,7 @@ Flickable {
     height: contentContainer.implicitHeight + 20
     anchors.left: parent.left
     y: -10
-    z: 10000
+    parent: glassPane
     contentWidth: width * 2
     contentHeight: height
 

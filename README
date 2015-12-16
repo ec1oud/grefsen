@@ -1,0 +1,17 @@
+Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
+
+Installation:
+
+mkdir ~/.config/grefsen
+cp * ~/.config/grefsen
+
+Then modify to taste.
+
+Running:
+
+cd path/to/grefsen
+QML2_IMPORT_PATH=imports ./grefsen
+
+Append "-platform eglfs" to run it on the Linux console.
+Otherwise it can run as a window inside an X11 session.
+

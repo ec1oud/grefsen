@@ -1,0 +1,4 @@
+module Grefsen
+plugin grefsenplugin
+classname GrefsenPlugin
+typeinfo plugins.qmltypes

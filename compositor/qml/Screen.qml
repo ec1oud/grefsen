@@ -36,6 +36,7 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtWayland.Compositor 1.0
+import Grefsen 1.0 as Grefsen
 
 WaylandOutput {
     id: output
@@ -45,26 +46,23 @@ WaylandOutput {
 
         property QtObject output
 
-        width: 1024
-        height: 768
+        width: 1024; height: 768
+        color: "black"
         visible: true
-
-        Image {
-            id: backgroundImage
-            anchors.fill: parent
-            fillMode: Image.Tile
-            source: "qrc:/images/background.jpg"
-            smooth: true
-        }
 
         WaylandMouseTracker {
             id: mouseTracker
             anchors.fill: parent
-
             enableWSCursor: true
+
             Item {
                 id: background
                 anchors.fill: parent
+                Loader {
+                    id: desktopLoader
+                    anchors.fill: parent
+                    source: "file://" + Grefsen.env.home + ".config/grefsen/screen.qml"
+                }
             }
             WaylandCursorItem {
                 id: cursor
@@ -75,6 +73,7 @@ WaylandOutput {
                 inputDevice: output.compositor.defaultInputDevice
             }
         }
+        // TODO remove this and make it work from ~/.config/screen.qml
         Shortcut {
             sequence: "Ctrl+Alt+Backspace"
             onActivated: Qt.quit()

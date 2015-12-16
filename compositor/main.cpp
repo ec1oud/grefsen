@@ -45,11 +45,18 @@
 
 #include <QtQml/QQmlApplicationEngine>
 
+#include <QDebug>
+#include <QDir>
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QQmlApplicationEngine appEngine(QUrl("qrc:///qml/main.qml"));
+    QQmlApplicationEngine appEngine;
+    // TODO make this work...
+    // for now you still need QML2_IMPORT_PATH=imports
+    appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
+    appEngine.load(QUrl("qrc:///qml/main.qml"));
 
     return app.exec();
 }

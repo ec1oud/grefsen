@@ -1,4 +1,4 @@
-QT += gui qml
+QT += gui qml quick
 CONFIG += link_pkgconfig
 TARGET = ../grefsen
 

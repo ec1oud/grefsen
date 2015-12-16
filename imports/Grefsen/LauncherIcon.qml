@@ -12,7 +12,7 @@ MouseArea {
     property string path: ""
     property string icon: ""
     Image {
-        source: icon ? "/usr/share/icons/oxygen/64x64/apps/" + icon + ".png" : ""
+        source: "image://icon/" + icon
         anchors.centerIn: parent
     }
     onClicked: if (path) launcher.launch(path); else console.log("nothing to launch")

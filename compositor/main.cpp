@@ -49,6 +49,7 @@
 #include <QDir>
 #include <QFontDatabase>
 
+#include "iconprovider.h"
 #include "launcherfiltermodel.h"
 #include "launcherfoldermodel.h"
 #include "launcheritem.h"
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
     // TODO make this work...
     // for now you still need QML2_IMPORT_PATH=imports
     appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
+    appEngine.addImageProvider(QLatin1String("icon"), new IconProvider);
     appEngine.load(QUrl("qrc:///qml/main.qml"));
 
 //    if (app.arguments().contains(QLatin1String("-f"))) ... TODO find the window, make it fullscreen

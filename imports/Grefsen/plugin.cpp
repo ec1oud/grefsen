@@ -5,6 +5,8 @@
 #include <QQmlExtensionPlugin>
 #include <QtQml>
 
+#include "hoverarea.h"
+
 Q_LOGGING_CATEGORY(lcRegistration, "grefsen.registration")
 
 static const char *ModuleName = "Grefsen";
@@ -34,7 +36,7 @@ public:
     virtual void registerTypes(const char *uri) {
         qCDebug(lcRegistration) << uri;
         Q_ASSERT(uri == QLatin1String(ModuleName));
-//        qmlRegisterType<SomeClass>(uri, 1, 0, "SomeClass");
+        qmlRegisterType<HoverArea>(uri, 1, 0, "HoverArea");
         qmlRegisterSingletonType(ModuleName, 1, 0, "env", environmentSingletonProvider);
     }
 };

@@ -8,19 +8,12 @@ Image {
 
     Grefsen.LeftSlidePanel {
         id: leftPanel
-        Text { color: "white"; text: "foo" }
-        Rectangle {
-            width: parent.width
-            height: 40
-            color: ma.containsPress ? "red" : ma.containsMouse ? "blue" : "white"
-            MouseArea {
-                id: ma
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: console.log("clicked")
-            }
+
+        Grefsen.LauncherIcon {
+            // TODO need an image provider for icons, use desktop file etc.
+            path: "/usr/bin/konsole"
+            icon: "utilities-terminal"
         }
-        Text { color: "white"; text: "bar" }
 
         Shortcut {
             sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all

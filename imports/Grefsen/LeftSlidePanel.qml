@@ -15,7 +15,7 @@ import Grefsen 1.0 as Grefsen
 */
 Flickable {
     id: root
-    width: 100
+    width: 72
     height: contentContainer.implicitHeight + 20
     anchors.left: parent.left
     y: -10
@@ -62,14 +62,14 @@ Flickable {
         height: root.height
         glowRadius: 10
         spread: 0.2
-        color: "cyan"
+        color: "#eaffa0"
         cornerRadius: rect.radius + glowRadius
 
         Rectangle {
             id: rect
             anchors.fill: parent
             anchors.leftMargin: -200
-            color: "black"
+            color: "#394d65"
             radius: 10
             antialiasing: true
 

@@ -64,13 +64,18 @@ Grefsen.HoverArea {
             LauncherIcon {
                 icon: object.iconId
                 path: object.exec
+                width: 80
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 anchors.margins: 6
+                elide: Text.ElideRight
                 text: object.title
+                width: 80
+                horizontalAlignment: Text.AlignHCenter
             }
         }
     }

@@ -9,15 +9,14 @@ Image {
     Grefsen.LeftSlidePanel {
         id: leftPanel
         Text { color: "white"; text: "boo!" }
+        Shortcut {
+            sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all
+            onActivated: leftPanel.toggle()
+        }
     }
 
     Shortcut {
         sequence: "Ctrl+Alt+Backspace"
         onActivated: Qt.quit()
-    }
-
-    Shortcut {
-        sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all
-        onActivated: leftPanel.toggle()
     }
 }

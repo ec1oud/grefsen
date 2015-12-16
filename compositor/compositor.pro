@@ -15,6 +15,10 @@ OTHER_FILES = \
 
 RESOURCES += grefsen.qrc
 
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
+RCC_DIR = .rcc
+
 PKGCONFIG += mlite5 glib-2.0
 
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS grefsen.pro

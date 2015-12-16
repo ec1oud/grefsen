@@ -15,7 +15,7 @@ import QtGraphicalEffects 1.0
 Flickable {
     id: root
     width: 100
-    height: 480 // rect.childrenRect.height + 20
+    height: contentContainer.implicitHeight + 20
     anchors.left: parent.left
     y: -10
     z: 10000
@@ -70,12 +70,13 @@ Flickable {
             radius: 10
             antialiasing: true
 
-            Item {
+            Column {
                 id: contentContainer
                 anchors.fill: parent
                 anchors.leftMargin: 200
                 anchors.topMargin: 10
                 anchors.margins: 6
+                spacing: 6
             }
         }
         MouseArea {

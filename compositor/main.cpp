@@ -47,6 +47,7 @@
 #include <QtQml/qqml.h>
 #include <QDebug>
 #include <QDir>
+#include <QFontDatabase>
 
 #include "processlauncher.h"
 
@@ -58,6 +59,11 @@ static void registerTypes()
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+
+    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
+        qWarning("failed to load FontAwesome from resources - "
+                 "maybe OK if you have it installed as a system font");
+
     registerTypes();
 
     QQmlApplicationEngine appEngine;

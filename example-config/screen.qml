@@ -14,9 +14,13 @@ Image {
         Grefsen.LauncherMenuIcon { }
 
         Grefsen.LauncherIcon {
-            // TODO need an image provider for icons, use desktop file etc.
             path: "/usr/bin/konsole"
             icon: "utilities-terminal"
+        }
+
+        Grefsen.LauncherIcon {
+            path: "/usr/bin/qtcreator"
+            icon: "QtProject-qtcreator"
         }
 
         Shortcut {

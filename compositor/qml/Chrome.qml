@@ -104,7 +104,7 @@ Item {
 
             Text {
                 color: "gray"
-                text: surfaceItem.shellSurface.title
+                text: surfaceItem.shellSurface ? surfaceItem.shellSurface.title : ""
                 anchors.margins: marginWidth
 
                 anchors.left: parent.left

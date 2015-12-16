@@ -2,3 +2,5 @@ module Grefsen
 plugin grefsenplugin
 classname GrefsenPlugin
 typeinfo plugins.qmltypes
+LeftSlidePanel 1.0 LeftSlidePanel.qml
+RightSlidePanel 1.0 RightSlidePanel.qml

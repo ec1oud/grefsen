@@ -23,7 +23,7 @@ import Grefsen 1.0 as Grefsen
 
 WaylandOutput {
     id: output
-    property alias surfaceArea: background
+    property alias surfaceArea: background // Chrome instances are parented to background
     window: Window {
         id: screen
 

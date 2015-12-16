@@ -12,9 +12,10 @@ public:
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) Q_DECL_OVERRIDE;
 
 protected:
+    QDir m_usrShareIcons = QDir("/usr/share/icons");
+    QDir m_usrSharePixmaps = QDir("/usr/share/pixmaps");
+    QStringList m_nameFilters = {"*.png", "*.jpg", "*.xpm", "*.svg", "*.svgz"};
     QStringList m_iconDirs;
-    QDir m_usrShareIcons;
-    QDir m_usrSharePixmaps;
 };
 
 #endif // ICONPROVIDER_H

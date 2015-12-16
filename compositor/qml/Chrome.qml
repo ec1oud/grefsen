@@ -19,8 +19,9 @@
 import QtQuick 2.6
 import QtWayland.Compositor 1.0
 import QtGraphicalEffects 1.0
+import com.theqtcompany.wlcompositor 1.0
 
-Item {
+StackableItem {
     id: rootChrome
     property alias surface: surfaceItem.surface
     //property alias valid: surfaceItem.valid
@@ -116,6 +117,7 @@ Item {
                 anchors.fill: parent
                 drag.target: rootChrome
                 hoverEnabled: true
+                onPressed: rootChrome.raise()
                 //cursorShape: Qt.OpenHandCursor
             }
 

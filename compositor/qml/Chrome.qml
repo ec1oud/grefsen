@@ -5,7 +5,7 @@
 **
 ** This file is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
-** License version 2 as published by the Free Software Foundation
+** License version 3 as published by the Free Software Foundation
 ** and appearing in the file LICENSE included in the packaging
 ** of this file.
 **
@@ -29,7 +29,7 @@ Item {
 
     property alias destroyAnimation : destroyAnimationImpl
 
-    property int marginWidth : 5
+    property int marginWidth : 3
     property int titlebarHeight : 25
 
     height: surfaceItem.height + marginWidth + titlebarHeight
@@ -40,8 +40,17 @@ Item {
         id: decoration
         anchors.fill: parent
         border.width: 1
-        border.color: "#60102080"
+        radius: marginWidth
+        border.color: "#305070a0"
         color: "#50ffffff"
+
+
+        MouseArea {
+            id: resizeArea
+            anchors.fill: parent
+            hoverEnabled: true
+            //cursorShape: Qt.SizeFDiagCursor
+        }
 
         Item {
             id: titlebar
@@ -71,8 +80,10 @@ Item {
             }
 
             MouseArea {
+                id: moveArea
                 anchors.fill: parent
                 drag.target: rootChrome
+                //cursorShape: Qt.OpenHandCursor
             }
 
             MouseArea {
@@ -118,6 +129,12 @@ Item {
         ScriptAction { script: { rootChrome.destroy(); } }
     }
 
+    ParallelAnimation {
+        id: createAnimationImpl
+        NumberAnimation { target: scaleTransform; property: "yScale"; from: 0; to: 1; duration: 150 }
+        NumberAnimation { target: scaleTransform; property: "xScale"; from: 0; to: 1; duration: 150 }
+    }
+
     transform: [
         Scale {
             id:scaleTransform
@@ -130,6 +147,8 @@ Item {
     ShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
+
+        opacity: moveArea.drag.active ? 0.5 : 1.0
 
         x: marginWidth
         y: titlebarHeight
@@ -147,6 +166,7 @@ Item {
                 console.log(shellSurface.title + " surface size: " + surface.size + " curs: " + surface.cursorSurface + " valid: " + surfaceItem.valid)
             }
         }
+        onValidChanged: if (valid) createAnimationImpl.start()
     }
 
 }

@@ -5,7 +5,7 @@
 **
 ** This file is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
-** License version 2 as published by the Free Software Foundation
+** License version 3 as published by the Free Software Foundation
 ** and appearing in the file LICENSE included in the packaging
 ** of this file.
 **

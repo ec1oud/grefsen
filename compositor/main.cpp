@@ -58,6 +58,8 @@ static void registerTypes()
 
 int main(int argc, char *argv[])
 {
+    if (!qEnvironmentVariableIsSet("QT_XCB_GL_INTEGRATION"))
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl"); // use xcomposite-glx if no EGL
     QGuiApplication app(argc, argv);
 
     if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))

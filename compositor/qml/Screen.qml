@@ -28,11 +28,16 @@ WaylandOutput {
         id: screen
 
         property QtObject output
+        property Item customizedBackground: desktopLoader.item
 
         width: 1024
         height: 768
         color: "black"
-        visible: true
+
+        Component.onCompleted: {
+            if (customizedBackground.hasOwnProperty("fullscreen") && customizedBackground.fullscreen)
+                visibility = Window.FullScreen
+        }
 
         WaylandMouseTracker {
             id: mouseTracker

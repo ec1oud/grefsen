@@ -89,5 +89,7 @@ int main(int argc, char *argv[])
     appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
     appEngine.load(QUrl("qrc:///qml/main.qml"));
 
+//    if (app.arguments().contains(QLatin1String("-f"))) ... TODO find the window, make it fullscreen
+
     return app.exec();
 }

@@ -6,6 +6,8 @@ Image {
     source: Grefsen.env.home + ".config/grefsen/Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg"
     //source: "qrc:/images/background.jpg"
 
+    property bool fullscreen: true // TODO doesn't really fit here
+
     Grefsen.LeftSlidePanel {
         id: leftPanel
 

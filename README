@@ -11,6 +11,7 @@ qmake
 make install
 
 then
+cd path/to/grefsen
 export PKG_CONFIG_PATH=/home/rutledge/dev/qt5-dbg/qtbase/lib/pkgconfig
 (because mlite installs its .pc file there)
 qmake
@@ -19,7 +20,7 @@ make
 Installation:
 
 mkdir ~/.config/grefsen
-cp * ~/.config/grefsen
+cp example-config/* ~/.config/grefsen
 
 Then modify to taste.
 

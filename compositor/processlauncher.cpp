@@ -34,9 +34,7 @@ void WaylandProcessLauncher::launch(const QString &program)
     QProcess *process = new QProcess(this);
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("DISPLAY", ":0");
     process->setProcessEnvironment(env);
-
 
     connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             process, &QProcess::deleteLater);

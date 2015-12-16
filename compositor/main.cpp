@@ -49,11 +49,24 @@
 #include <QDir>
 #include <QFontDatabase>
 
+#include "launcherfoldermodel.h"
+#include "launcheritem.h"
+#include "launchermodel.h"
+#include "launchermonitor.h"
+#include "launcherwatchermodel.h"
 #include "processlauncher.h"
+#include "qobjectlistmodel.h"
 
 static void registerTypes()
 {
     qmlRegisterType<WaylandProcessLauncher>("com.theqtcompany.wlprocesslauncher", 1, 0, "ProcessLauncher");
+
+    qmlRegisterType<LauncherModel>("org.nemomobile.lipstick", 0, 1, "LauncherModel");
+    qmlRegisterType<LauncherWatcherModel>("org.nemomobile.lipstick", 0, 1, "LauncherWatcherModel");
+    qmlRegisterType<LauncherItem>("org.nemomobile.lipstick", 0, 1, "LauncherItem");
+    qmlRegisterType<LauncherFolderModel>("org.nemomobile.lipstick", 0, 1, "LauncherFolderModel");
+    qmlRegisterType<LauncherFolderItem>("org.nemomobile.lipstick", 0, 1, "LauncherFolderItem");
+    qmlRegisterType<QObjectListModel>();
 }
 
 int main(int argc, char *argv[])

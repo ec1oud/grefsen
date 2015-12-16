@@ -3,5 +3,6 @@ plugin grefsenplugin
 classname GrefsenPlugin
 typeinfo plugins.qmltypes
 LauncherIcon 1.0 LauncherIcon.qml
+LauncherMenu 1.0 LauncherMenu.qml
 LeftSlidePanel 1.0 LeftSlidePanel.qml
 RightSlidePanel 1.0 RightSlidePanel.qml

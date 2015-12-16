@@ -21,6 +21,10 @@ Image {
         }
     }
 
+    Grefsen.LauncherMenu {
+        anchors.fill: parent
+    }
+
     Shortcut {
         sequence: "Ctrl+Alt+Backspace"
         onActivated: Qt.quit()

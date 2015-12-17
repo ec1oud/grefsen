@@ -28,6 +28,11 @@ Image {
             icon: "browser"
         }
 
+        Grefsen.LauncherIcon {
+            path: "quasselclient"
+            icon: "quassel"
+        }
+
         Grefsen.QuitButton { }
 
         Shortcut {

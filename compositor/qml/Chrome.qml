@@ -30,7 +30,7 @@ StackableItem {
 
     property alias destroyAnimation : destroyAnimationImpl
 
-    property int marginWidth : surfaceItem.isPopup ? 1 : 3
+    property int marginWidth : surfaceItem.isPopup ? 1 : 6
     property int titlebarHeight : surfaceItem.isPopup ? 0 : 25
 
     height: surfaceItem.height + marginWidth + titlebarHeight

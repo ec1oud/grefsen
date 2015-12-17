@@ -17,8 +17,7 @@
 ****************************************************************************/
 
 #include "processlauncher.h"
-
-#include <QProcess>
+#include <QDebug>
 
 WaylandProcessLauncher::WaylandProcessLauncher(QObject *parent)
     : QObject(parent)
@@ -39,10 +38,28 @@ void WaylandProcessLauncher::launch(const QString &program)
     connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             process, &QProcess::deleteLater);
     connect(process, &QProcess::errorOccurred, &QProcess::deleteLater);
+    connect(process, &QProcess::errorOccurred, this, &WaylandProcessLauncher::onError);
+    connect(process, &QProcess::stateChanged, this, &WaylandProcessLauncher::onStateChanged);
 
     QStringList arguments;
     arguments << "-platform" << "wayland";
     process->start(program, arguments);
 
+}
+
+void WaylandProcessLauncher::onError(QProcess::ProcessError error)
+{
+    QProcess *proc = qobject_cast<QProcess *>(sender());
+    qWarning() << error << "from" << proc;
+    if (proc)
+        qWarning() << proc->readAllStandardError();
+}
+
+void WaylandProcessLauncher::onStateChanged(QProcess::ProcessState state)
+{
+    QProcess *proc = qobject_cast<QProcess *>(sender());
+    qDebug() << proc << "state changed" << state;
+    if (proc)
+        qDebug() << proc->readAllStandardError();
 }
 

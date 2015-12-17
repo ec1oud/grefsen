@@ -23,7 +23,7 @@ import Grefsen 1.0 as Grefsen
 
 WaylandOutput {
     id: output
-    property alias surfaceArea: background // Chrome instances are parented to background
+    property alias surfaceArea: compositorArea // Chrome instances are parented to compositorArea
     window: Window {
         id: screen
 
@@ -53,7 +53,10 @@ WaylandOutput {
                     source: "file://" + Grefsen.env.home + ".config/grefsen/screen.qml"
                 }
             }
-
+            Item {
+                id: compositorArea
+                anchors.fill: parent
+            }
             Item {
                 id: glassPane
                 objectName: "glassPane"

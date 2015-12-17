@@ -117,7 +117,17 @@ StackableItem {
                 anchors.fill: parent
                 drag.target: rootChrome
                 hoverEnabled: true
-                onPressed: rootChrome.raise()
+                acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton
+                onPressed: {
+                    if (mouse.button === Qt.LeftButton) {
+                        rootChrome.raise()
+                    } else if (mouse.button === Qt.RightButton) {
+                        //console.log("right button")
+                        // TODO add menu
+                    } else if (mouse.button === Qt.MiddleButton) {
+                        rootChrome.lower()
+                    }
+                }
                 //cursorShape: Qt.OpenHandCursor
             }
 

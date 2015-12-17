@@ -1,9 +1,12 @@
-launchers for more apps: qtcreator and a browser at least
 connman configuration
+xwayland: root window transparent, or under the grefsen desktop background? or rootless?
+probably hard: decorate X windows (like Weston does)
+xdg_shell protocol (weston apps don't run without it)
 
 done
 ----
 basic sidebar with a basic launcher for konsole
 some custom window decorations
 launcher menu based on desktop files
+launchers for more apps: qtcreator and a browser at least
 

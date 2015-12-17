@@ -28,6 +28,8 @@ Image {
             icon: "browser"
         }
 
+        Grefsen.QuitButton { }
+
         Shortcut {
             sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all
             onActivated: leftPanel.toggle()

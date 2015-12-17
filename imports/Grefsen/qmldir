@@ -6,4 +6,5 @@ LauncherIcon 1.0 LauncherIcon.qml
 LauncherMenu 1.0 LauncherMenu.qml
 LauncherMenuIcon 1.0 LauncherMenuIcon.qml
 LeftSlidePanel 1.0 LeftSlidePanel.qml
+QuitButton 1.0 QuitButton.qml
 RightSlidePanel 1.0 RightSlidePanel.qml

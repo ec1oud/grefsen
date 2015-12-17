@@ -205,6 +205,36 @@ StackableItem {
         return result
     }
 
+    function findPositionForWindow() {
+        var screenW = defaultOutput.surfaceArea.width
+        var screenH = defaultOutput.surfaceArea.height
+
+        var topLeftTaken = false;
+        var n = defaultOutput.surfaceArea.children.length
+        var i = 0
+        for (i = 0; i < n; i++) {
+            var item = defaultOutput.surfaceArea.children[i]
+            if (item.width > 10 && item.x < 5 && item.y < 5) {
+                topLeftTaken = true
+                break;
+            }
+        }
+        if (topLeftTaken) {
+            rootChrome.x = Math.random() * screenW
+            rootChrome.y = Math.random() * screenH
+        }
+    }
+
+    function adjustPositionForWindow(xp, yp, w, h) {
+        var screenW = defaultOutput.surfaceArea.width
+        var screenH = defaultOutput.surfaceArea.height
+
+        var x = Math.min(xp, screenW - w)
+        var y = Math.min(yp, screenH - h)
+
+        return Qt.point(x, y)
+    }
+
     ShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
@@ -243,10 +273,20 @@ StackableItem {
             target: surface
             onSizeChanged: {
                 surfaceItem.valid = !surface.cursorSurface && surface.size.width > 0 && surface.size.height > 0
-                console.log(shellSurface.title + " surface size: " + surface.size + " curs: " + surface.cursorSurface + " valid: " + surfaceItem.valid)
             }
         }
-        onValidChanged: if (valid && !isPopup) createAnimationImpl.start()
+        onValidChanged:  {
+            if (valid && !isPopup) {
+                if (!isTransient) {
+                    var w = surface.size.width
+                    var h = surface.size.height
+                    var pos = adjustPositionForWindow(rootChrome.x, rootChrome.y, w, h)
+                    rootChrome.x = pos.x
+                    rootChrome.y = pos.y
+                }
+                createAnimationImpl.start()
+            }
+        }
     }
 
 }

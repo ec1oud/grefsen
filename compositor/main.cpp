@@ -50,6 +50,8 @@
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QQuickItem>
+#include <QScreen>
+#include <QWindow>
 
 #include "iconprovider.h"
 #include "launcherfiltermodel.h"
@@ -152,6 +154,14 @@ static void registerTypes()
     qmlRegisterType<QObjectListModel>();
 }
 
+static void screenCheck()
+{
+    foreach (const QScreen *scr, QGuiApplication::screens()) {
+        qDebug() << "Screen" << scr->name() << scr->geometry() << scr->physicalSize()
+                 << "DPI: log" << scr->logicalDotsPerInch() << "phys" << scr->physicalDotsPerInch();
+    }
+}
+
 int main(int argc, char *argv[])
 {
     if (!qEnvironmentVariableIsSet("QT_XCB_GL_INTEGRATION"))
@@ -161,7 +171,9 @@ int main(int argc, char *argv[])
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
     grefsonPID = QCoreApplication::applicationPid();
 
-    setupSignalHandler();
+    if (app.arguments().contains(QLatin1String("-r"))) // respawn on crash
+        setupSignalHandler();
+    screenCheck();
 
     if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
         qWarning("failed to load FontAwesome from resources - "

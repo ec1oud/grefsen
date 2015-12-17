@@ -30,8 +30,8 @@ StackableItem {
 
     property alias destroyAnimation : destroyAnimationImpl
 
-    property int marginWidth : surfaceItem.isPopup ? 1 : 6
-    property int titlebarHeight : surfaceItem.isPopup ? 0 : 25
+    property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
+    property int titlebarHeight : surfaceItem.isPopup || surfaceItem.isFullscreen ? 0 : 25
 
     height: surfaceItem.height + marginWidth + titlebarHeight
     width: surfaceItem.width + 2 * marginWidth
@@ -44,7 +44,7 @@ StackableItem {
         radius: marginWidth
         border.color: (resizeArea.pressed || resizeArea.containsMouse) ? "#ffc02020" :"#305070a0"
         color: "#50ffffff"
-
+        visible: !surfaceItem.isFullscreen
 
         MouseArea {
             id: resizeArea
@@ -240,6 +240,7 @@ StackableItem {
         property bool valid: false
         property bool isPopup: false
         property bool isTransient: false
+        property bool isFullscreen: false
 
         opacity: moveArea.drag.active ? 0.5 : 1.0
 
@@ -264,6 +265,11 @@ StackableItem {
                 surfaceItem.isTransient = true
                 moveRelativeToSurface(parentSurface, relativeToParent)
             }
+            onSetFullScreen: {
+                surfaceItem.isFullscreen = true
+                rootChrome.x = 0
+                rootChrome.y = 0
+            }
         }
         onSurfaceDestroyed: {
             view.bufferLock = true;
@@ -276,7 +282,7 @@ StackableItem {
             }
         }
         onValidChanged:  {
-            if (valid && !isPopup) {
+            if (valid && !isPopup && !isFullscreen) {
                 if (!isTransient) {
                     var w = surface.size.width
                     var h = surface.size.height
@@ -285,6 +291,8 @@ StackableItem {
                     rootChrome.y = pos.y
                 }
                 createAnimationImpl.start()
+            } else if (valid && isFullscreen) {
+                rootChrome.requestSize(defaultOutput.surfaceArea.width, defaultOutput.surfaceArea.height)
             }
         }
     }

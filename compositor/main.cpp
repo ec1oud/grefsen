@@ -182,6 +182,7 @@ int main(int argc, char *argv[])
                  "maybe OK if you have it installed as a system font");
 
     registerTypes();
+    qputenv("QT_QPA_PLATFORM", "wayland");
 
     QQmlApplicationEngine appEngine;
     // TODO make this work...

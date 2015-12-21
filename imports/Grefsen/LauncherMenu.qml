@@ -1,5 +1,4 @@
 import QtQuick 2.5
-import org.nemomobile.lipstick 0.1
 import Qt.labs.controls 1.0
 import Grefsen 1.0 as Grefsen
 
@@ -47,11 +46,11 @@ Grefsen.HoverArea {
         anchors.bottomMargin: 0
         anchors.margins: 6
         clip: true
-        property LauncherModel launcherModel: LauncherModel { id: launcherModel }
-        model: LauncherFilterModel {
-            sourceModel: launcherModel
-            filterSubstring: searchField.text
-        }
+//        property LauncherModel launcherModel: LauncherModel { id: launcherModel }
+//        model: LauncherFilterModel {
+//            sourceModel: launcherModel
+//            filterSubstring: searchField.text
+//        }
         delegate: Item {
             width: 100
             height: 100
@@ -61,12 +60,12 @@ Grefsen.HoverArea {
                 anchors.margins: 5
                 opacity: 0.35
             }
-            LauncherIcon {
-                icon: object.iconId
-                path: object.exec
-                width: 80
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+//            LauncherIcon {
+//                icon: object.iconId
+//                path: object.exec
+//                width: 80
+//                anchors.horizontalCenter: parent.horizontalCenter
+//            }
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter

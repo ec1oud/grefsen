@@ -7,6 +7,7 @@ Image {
     //source: "qrc:/images/background.jpg"
 
     property bool fullscreen: true // TODO doesn't really fit here
+    // TODO set the icon theme
 
     Grefsen.LeftSlidePanel {
         id: leftPanel
@@ -25,7 +26,7 @@ Image {
 
         Grefsen.LauncherIcon {
             path: "fancybrowser"
-            icon: "browser"
+            icon: "internet-web-browser"
         }
 
         Grefsen.LauncherIcon {

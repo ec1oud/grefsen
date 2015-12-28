@@ -4,8 +4,9 @@ import Grefsen 1.0 as Grefsen
 
 Grefsen.HoverArea {
     id: root
-    width: 612
-    height: 1080
+    width: 200
+//    height: Math.min(1000, list.implicitHeight)
+    height: 500
     signal close
     onExited: root.close()
 
@@ -40,41 +41,51 @@ Grefsen.HoverArea {
         }
     }
 
-    GridView {
+    ListView {
+        id: list
         anchors.fill: parent
         anchors.topMargin: searchField.height + 6
         anchors.bottomMargin: 0
         anchors.margins: 6
         clip: true
-//        property LauncherModel launcherModel: LauncherModel { id: launcherModel }
+//        property var launcherModel: Grefsen.LauncherModel { id: launcherModel }
 //        model: LauncherFilterModel {
 //            sourceModel: launcherModel
 //            filterSubstring: searchField.text
 //        }
-        delegate: Item {
-            width: 100
-            height: 100
+        model: Grefsen.launcherModel.applicationMenu
+        delegate: MouseArea {
+            width: parent.width
+            height: 32
+//            property bool isApp: modelData.hasOwnProperty("exec")
+//            onClicked: {
+//                if (isApp)
+//                    Grefsen.launcherModel.launch(modelData)
+//                else
+//                    Grefsen.launcherModel.openSubmenu(modelData.title)
+//            }
+            onClicked: Grefsen.launcherModel.select(modelData)
+
             Rectangle {
-                radius: 10
+                radius: 2
                 anchors.fill: parent
-                anchors.margins: 5
+                anchors.margins: 1
                 opacity: 0.35
             }
-//            LauncherIcon {
-//                icon: object.iconId
-//                path: object.exec
-//                width: 80
-//                anchors.horizontalCenter: parent.horizontalCenter
-//            }
-
+            Image {
+                source: "image://icon/" + modelData.icon
+                sourceSize.width: 24
+                sourceSize.height: 24
+                anchors.verticalCenter: parent.verticalCenter
+                x: 4
+            }
             Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.margins: 6
+                anchors.verticalCenter: parent.verticalCenter
+                x: 30
                 elide: Text.ElideRight
-                text: object.title
-                width: 80
-                horizontalAlignment: Text.AlignHCenter
+                text: modelData.title
+//                Component.onCompleted: console.log(" "+ JSON.stringify(modelData))
+                width: parent.width - x - 4
             }
         }
     }

@@ -13,9 +13,9 @@ MouseArea {
     }
     onClicked: root.checked = !checked
 
-//    Grefsen.LauncherMenu {
-//        anchors.left: parent.right
-//        visible: root.checked
-//        onClose: root.checked = false
-//    }
+    Grefsen.LauncherMenu {
+        anchors.left: parent.right
+        visible: root.checked
+        onClose: root.checked = false
+    }
 }

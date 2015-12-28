@@ -19,6 +19,6 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 RCC_DIR = .rcc
 
-PKGCONFIG += glib-2.0 Qt5Xdg
+PKGCONFIG += glib-2.0
 
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS grefsen.pro

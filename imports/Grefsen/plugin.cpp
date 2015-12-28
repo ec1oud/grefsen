@@ -6,6 +6,7 @@
 #include <QtQml>
 
 #include "hoverarea.h"
+#include "iconprovider.h"
 
 Q_LOGGING_CATEGORY(lcRegistration, "grefsen.registration")
 
@@ -31,6 +32,7 @@ public:
     virtual void initializeEngine(QQmlEngine *engine, const char * uri) {
         Q_UNUSED(engine)
         qCDebug(lcRegistration) << uri;
+        engine->addImageProvider(QLatin1String("icon"), new IconProvider);
     }
 
     virtual void registerTypes(const char *uri) {

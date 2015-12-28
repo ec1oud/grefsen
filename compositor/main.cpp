@@ -53,7 +53,6 @@
 #include <QScreen>
 #include <QWindow>
 
-#include "iconprovider.h"
 #include "processlauncher.h"
 #include "stackableitem.h"
 
@@ -173,7 +172,6 @@ int main(int argc, char *argv[])
     // TODO make this work...
     // for now you still need QML2_IMPORT_PATH=imports
     appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
-    appEngine.addImageProvider(QLatin1String("icon"), new IconProvider);
     appEngine.load(QUrl("qrc:///qml/main.qml"));
 
     appEngine.rootContext()->setContextProperty(glassPaneName,

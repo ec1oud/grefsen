@@ -1,19 +1,12 @@
 Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 
+Requirements:
+
+- Qt 5.7
+- libQtXdg
+
 Building:
 
-If you don't have mlite:
-
-cd somewhere/else
-git clone https://git.merproject.org/mer-core/mlite.git
-cd mlite
-qmake
-make install
-
-then
-cd path/to/grefsen
-export PKG_CONFIG_PATH=/home/rutledge/dev/qt5-dbg/qtbase/lib/pkgconfig
-(because mlite installs its .pc file there)
 qmake
 make
 
@@ -27,9 +20,6 @@ Then modify to taste.
 Running:
 
 You'll need to set the following env variables:
-
-export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-  (avoid Qt drawing its default blue titlebars, so that we can use custom ones)
 
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
   (attempt to avoid hidpi scaling)

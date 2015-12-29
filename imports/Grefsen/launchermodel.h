@@ -20,10 +20,12 @@ public:
 
 signals:
     void applicationsChanged();
+    void execFailed(QString error);
 
 public slots:
     void reset();
     void select(QJSValue sel);
+    void exec(QString desktopFilePath);
     void openSubmenu(QString title);
 
 protected:

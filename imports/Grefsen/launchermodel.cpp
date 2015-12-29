@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QJSEngine>
 #include <XmlHelper>
+#include <XdgDesktopFile>
 #include <XdgMenu>
 
 LauncherModel::LauncherModel(QJSEngine *engine, QObject *parent)
@@ -35,11 +36,24 @@ void LauncherModel::select(QJSValue sel)
     QString title = sel.property(QStringLiteral("title")).toString();
     qDebug() << title;
     if (sel.hasOwnProperty(QStringLiteral("exec"))) {
-qDebug() << "exec" << sel.property(QStringLiteral("exec")).toString();
+//qDebug() << "exec" << sel.property(QStringLiteral("exec")).toString();
+        exec(sel.property(QStringLiteral("desktopFile")).toString());
         reset();
     } else {
         openSubmenu(title);
     }
+}
+
+void LauncherModel::exec(QString desktopFilePath)
+{
+    XdgDesktopFile* dtf = XdgDesktopFileCache::getFile(desktopFilePath);
+//qDebug() << desktopFilePath << dtf;
+    if (dtf) {
+        bool ok = dtf->startDetached();
+        if (Q_UNLIKELY(!ok))
+            emit execFailed(tr("failed to exec '%s'", dtf->value(QStringLiteral("exec")).toString().toLocal8Bit().constData()));
+    } else
+        emit execFailed(tr("failed to find desktop file '%s'", desktopFilePath.toLocal8Bit().constData()));
 }
 
 void LauncherModel::openSubmenu(QString title)
@@ -91,6 +105,7 @@ void LauncherModel::appendApp(QJSValue in, const QDomElement &xml)
     item.setProperty(QStringLiteral("title"), title);
     item.setProperty(QStringLiteral("icon"), icon);
     item.setProperty(QStringLiteral("exec"), xml.attribute(QStringLiteral("exec")));
+    item.setProperty(QStringLiteral("desktopFile"), xml.attribute(QStringLiteral("desktopFile")));
     in.setProperty(idx, item);
 }
 

@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 
-SUBDIRS += compositor imports
+SUBDIRS += compositor imports example-config

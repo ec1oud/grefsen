@@ -3,7 +3,9 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 Requirements:
 
 - Qt 5.7
+- Qt.labs.controls AKA QtQuick Controls 2
 - libQtXdg
+- for the Connman network manager popover (non-fatal): libconnman-qt
 
 Building:
 

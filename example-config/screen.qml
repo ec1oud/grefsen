@@ -34,6 +34,11 @@ Image {
             icon: "quassel"
         }
 
+        Grefsen.PopoverTrayIcon {
+            popover: Grefsen.ConnmanPopover { }
+            icon: "preferences-system-network"
+        }
+
         Grefsen.QuitButton { }
 
         Shortcut {

@@ -152,6 +152,8 @@ int main(int argc, char *argv[])
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl"); // use xcomposite-glx if no EGL
     if (!qEnvironmentVariableIsSet("QT_WAYLAND_DISABLE_WINDOWDECORATION"))
         qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
+    if (!qEnvironmentVariableIsSet("QT_LABS_CONTROLS_STYLE"))
+        qputenv("QT_LABS_CONTROLS_STYLE", "Universal");
     QGuiApplication app(argc, argv);
 //    app.setAttribute(Qt::AA_DisableHighDpiScaling); // better use the env variable... but that's not enough on eglfs
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();

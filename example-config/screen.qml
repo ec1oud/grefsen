@@ -1,5 +1,6 @@
 import QtQuick 2.6
-import Grefsen 1.0 as Grefsen
+import Grefsen 1.0 as Grefsen // workaround for QTBUG-50219
+import Grefsen 1.0
 
 Image {
     fillMode: Image.PreserveAspectCrop
@@ -9,37 +10,37 @@ Image {
     property bool fullscreen: true // TODO doesn't really fit here
     // TODO set the icon theme
 
-    Grefsen.LeftSlidePanel {
+    LeftSlidePanel {
         id: leftPanel
 
-        Grefsen.LauncherMenuIcon { }
+        LauncherMenuIcon { }
 
-        Grefsen.LauncherIcon {
+        LauncherIcon {
             path: "/usr/bin/konsole"
             icon: "utilities-terminal"
         }
 
-        Grefsen.LauncherIcon {
+        LauncherIcon {
             path: "/usr/bin/qtcreator"
             icon: "QtProject-qtcreator"
         }
 
-        Grefsen.LauncherIcon {
+        LauncherIcon {
             path: "fancybrowser"
             icon: "internet-web-browser"
         }
 
-        Grefsen.LauncherIcon {
+        LauncherIcon {
             path: "quasselclient"
             icon: "quassel"
         }
 
-        Grefsen.PopoverTrayIcon {
-            popover: Grefsen.ConnmanPopover { }
+        PopoverTrayIcon {
+            popover: ConnmanPopover { }
             icon: "preferences-system-network"
         }
 
-        Grefsen.QuitButton { }
+        QuitButton { }
 
         Shortcut {
             sequence: "Meta+A" // maybe not the best one... or maybe we don't need it at all

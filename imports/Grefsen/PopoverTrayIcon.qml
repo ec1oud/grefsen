@@ -1,6 +1,7 @@
 import QtQuick 2.5
 
 MouseArea {
+    id: root
     width: parent.width
     height: width
 
@@ -16,8 +17,9 @@ MouseArea {
 
     Loader {
         id: loader
-        anchors.left: icon.right
-        anchors.top: icon.top
+        anchors.left: root.right
+        anchors.top: root.top
+        onItemChanged: if (item) item.pointLeftToY = root.height / 2
     }
 
     onClicked: {

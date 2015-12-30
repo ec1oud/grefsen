@@ -2,12 +2,9 @@ import QtQuick 2.6
 import Qt.labs.controls 1.0
 import MeeGo.Connman 0.2
 
-Rectangle {
+Popover {
     width: 320
     height: 480
-    color: "black"
-    clip: true
-//    parent: glassPane
 
     NetworkManager {
         id: manager

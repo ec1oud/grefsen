@@ -163,9 +163,12 @@ int main(int argc, char *argv[])
         setupSignalHandler();
     screenCheck();
 
-    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
-        qWarning("failed to load FontAwesome from resources - "
-                 "maybe OK if you have it installed as a system font");
+    {
+        QFontDatabase fd;
+        if (!fd.families().contains(QLatin1String("FontAwesome")))
+            if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
+                qWarning("failed to load FontAwesome from resources");
+    }
 
     registerTypes();
     qputenv("QT_QPA_PLATFORM", "wayland"); // not for grefsen but for child processes

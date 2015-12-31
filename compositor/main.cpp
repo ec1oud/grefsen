@@ -168,14 +168,11 @@ int main(int argc, char *argv[])
                  "maybe OK if you have it installed as a system font");
 
     registerTypes();
-    qputenv("QT_QPA_PLATFORM", "wayland");
+    qputenv("QT_QPA_PLATFORM", "wayland"); // not for grefsen but for child processes
 
     QQmlApplicationEngine appEngine;
-    // TODO make this work...
-    // for now you still need QML2_IMPORT_PATH=imports
-    appEngine.addPluginPath(QDir::current().filePath(QStringLiteral("imports")));
+    appEngine.addImportPath(app.applicationDirPath() + QLatin1String("/imports"));
     appEngine.load(QUrl("qrc:///qml/main.qml"));
-
     appEngine.rootContext()->setContextProperty(glassPaneName,
         appEngine.rootObjects().first()->findChild<QQuickItem*>(glassPaneName));
 

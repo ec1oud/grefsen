@@ -9,6 +9,7 @@ LauncherModel::LauncherModel(QJSEngine *engine, QObject *parent)
   : QObject(parent)
   , m_engine(engine)
   , m_root(engine->newObject())
+  , m_allApps(engine->newArray())
 {
     QString menuFile = XdgMenu::getMenuFileName();
     XdgMenu xdgMenu;
@@ -23,6 +24,23 @@ LauncherModel::LauncherModel(QJSEngine *engine, QObject *parent)
 
     build(m_root, m_dom);
     m_list = m_root;
+}
+
+void LauncherModel::setSubstringFilter(QString substringFilter)
+{
+    if (m_substringFilter == substringFilter)
+        return;
+
+    m_substringFilter = substringFilter;
+    emit substringFilterChanged();
+
+    if (m_substringFilter.isEmpty()) {
+        reset();
+        return;
+    }
+    m_list = m_engine->newObject();
+    m_list.setProperty(QStringLiteral("items"), findSubstring(QStringLiteral("title"), m_substringFilter));
+    emit applicationsChanged();
 }
 
 void LauncherModel::reset()
@@ -107,6 +125,7 @@ void LauncherModel::appendApp(QJSValue in, const QDomElement &xml)
     item.setProperty(QStringLiteral("exec"), xml.attribute(QStringLiteral("exec")));
     item.setProperty(QStringLiteral("desktopFile"), xml.attribute(QStringLiteral("desktopFile")));
     in.setProperty(idx, item);
+    m_allApps.setProperty(m_allAppsCount++, item);
 }
 
 QJSValue LauncherModel::findFirst(QString key, QString value, QJSValue array)
@@ -119,4 +138,17 @@ QJSValue LauncherModel::findFirst(QString key, QString value, QJSValue array)
         next = array.property(++i);
     }
     return QJSValue();
+}
+
+QJSValue LauncherModel::findSubstring(QString key, QString substr)
+{
+    QJSValue ret = m_engine->newArray();
+    int i = 0, ri = 0;
+    QJSValue next = m_allApps.property(i);
+    while (!next.isUndefined()) {
+        if (next.property(key).toString().contains(substr, Qt::CaseInsensitive))
+            ret.setProperty(ri++, next);
+        next = m_allApps.property(++i);
+    }
+    return ret;
 }

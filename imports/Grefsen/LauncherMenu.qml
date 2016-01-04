@@ -23,6 +23,7 @@ Grefsen.HoverArea {
         width: parent.width - 12 - height - 6
         x: 6; y: 6
         focus: true
+        onTextChanged: Grefsen.launcherModel.substringFilter = text
     }
     MouseArea {
         height: searchField.height
@@ -48,22 +49,10 @@ Grefsen.HoverArea {
         anchors.bottomMargin: 0
         anchors.margins: 6
         clip: true
-//        property var launcherModel: Grefsen.LauncherModel { id: launcherModel }
-//        model: LauncherFilterModel {
-//            sourceModel: launcherModel
-//            filterSubstring: searchField.text
-//        }
         model: Grefsen.launcherModel.applicationMenu
         delegate: MouseArea {
             width: parent.width
             height: 32
-//            property bool isApp: modelData.hasOwnProperty("exec")
-//            onClicked: {
-//                if (isApp)
-//                    Grefsen.launcherModel.launch(modelData)
-//                else
-//                    Grefsen.launcherModel.openSubmenu(modelData.title)
-//            }
             onClicked: Grefsen.launcherModel.select(modelData)
 
             Rectangle {

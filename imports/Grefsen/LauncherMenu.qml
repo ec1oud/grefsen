@@ -20,28 +20,25 @@ Grefsen.HoverArea {
 
     TextField {
         id: searchField
-        width: parent.width - 12 - height - 6
+        width: parent.width - 12
         x: 6; y: 6
         focus: true
         onTextChanged: Grefsen.launcherModel.substringFilter = text
-    }
-    MouseArea {
-        height: searchField.height
-        width: height
-        anchors.right: parent.right
-        anchors.rightMargin: 6
-        y: 6
-        onClicked: root.close()
-        Text {
-            id: closeIcon
-            anchors.centerIn: parent
-            font.pixelSize: parent.height - 6
-            font.family: "FontAwesome"
-            text: "\uf00d"
-            color: "#555"
+        MouseArea {
+            height: searchField.height
+            width: height
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked: searchField.text = ""
+            Text {
+                anchors.centerIn: parent
+                font.family: "FontAwesome"
+                text: "\uf05c"  // TODO more specific clear-text-field icon
+                font.pointSize: searchField.font.pointSize * 1.25
+            }
         }
-    }
 
+    }
     ListView {
         id: list
         anchors.fill: parent

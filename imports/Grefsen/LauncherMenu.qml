@@ -74,8 +74,8 @@ Grefsen.HoverArea {
             }
             Image {
                 source: "image://icon/" + modelData.icon
-                sourceSize.width: 24
-                sourceSize.height: 24
+                sourceSize.width: 22
+                sourceSize.height: 22
                 anchors.verticalCenter: parent.verticalCenter
                 x: 4
             }

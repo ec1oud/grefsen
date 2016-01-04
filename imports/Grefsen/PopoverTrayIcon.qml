@@ -8,7 +8,6 @@ MouseArea {
     property string icon: ""
     property Component popover: undefined
     Image {
-        id: icon
         source: "image://icon/" + icon
         sourceSize.width: 64
         sourceSize.height: 64

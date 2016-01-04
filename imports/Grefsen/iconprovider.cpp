@@ -4,22 +4,36 @@
 #include <QDir>
 #include <QDirIterator>
 
+static QDir UsrSharePixmaps("/usr/share/pixmaps");
+
 IconProvider::IconProvider()
   : QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
-    XdgIcon::setThemeName(QStringLiteral("oxygen"));
-    qDebug() << "theme is" << XdgIcon::themeName() << "default icon" << XdgIcon::defaultApplicationIconName();
+    XdgIcon::setThemeName(QStringLiteral("oxygen")); // TODO make configurable
+    qDebug() << "theme is" << QIcon::themeName() << "paths" << QIcon::themeSearchPaths()
+             << "default icon" << XdgIcon::defaultApplicationIconName();
 }
 
 QPixmap IconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    QIcon icon = XdgIcon::fromTheme({id});
+//qDebug() << id << requestedSize;
+    // absolute path: just load the image
+    if (id.startsWith('/')) {
+        QPixmap ret(id);
+        if (ret.width() > requestedSize.width() || ret.height() > requestedSize.height())
+            ret = ret.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if (size)
+            *size = ret.size();
+        return ret;
+    }
+    // main strategy: QIcon usually knows how to find it
+    QIcon icon = QIcon::fromTheme(id);
+//    QIcon icon = XdgIcon::fromTheme(id, XdgIcon::defaultApplicationIcon()); // often not working well
     // fall back to /usr/share/pixmaps if nothing found yet
-    /* shouldn't be necessary - see qiconloader.cpp
     if (icon.isNull()) {
-        QStringList p = m_usrSharePixmaps.entryList({id + "*"}, QDir::Files);
+        QStringList p = UsrSharePixmaps.entryList({id + "*"}, QDir::Files);
         if (!p.isEmpty()) {
-            QPixmap ret(m_usrSharePixmaps.filePath(p.first()));
+            QPixmap ret(UsrSharePixmaps.filePath(p.first()));
             if (ret.width() > requestedSize.width() || ret.height() > requestedSize.height())
                 ret = ret.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             if (size)
@@ -27,9 +41,11 @@ QPixmap IconProvider::requestPixmap(const QString &id, QSize *size, const QSize 
             return ret;
         }
     }
-    */
-    if (icon.isNull())
-        icon = XdgIcon::defaultApplicationIcon(); // TODO doesn't seem to work
+    // default app icon if all else fails
+    if (icon.isNull()) {
+        qWarning() << "failed to find icon" << id;
+        icon = QIcon::fromTheme(XdgIcon::defaultApplicationIconName());
+    }
     QPixmap ret = icon.pixmap(requestedSize);
     if (size)
         *size = ret.size();

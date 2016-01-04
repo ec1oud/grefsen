@@ -9,5 +9,6 @@ LauncherMenuIcon 1.0 LauncherMenuIcon.qml
 LeftSlidePanel 1.0 LeftSlidePanel.qml
 Popover 1.0 Popover.qml
 PopoverTrayIcon 1.0 PopoverTrayIcon.qml
+PopoverPanelItem 1.0 PopoverPanelItem.qml
 QuitButton 1.0 QuitButton.qml
 RightSlidePanel 1.0 RightSlidePanel.qml

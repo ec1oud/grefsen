@@ -1,7 +1,15 @@
-connman configuration
+-c for config; test nested
+touch window drag/resize
+long-press menu
+dbus menubar & tray
 xwayland: root window transparent, or under the grefsen desktop background? or rootless?
 probably hard: decorate X windows (like Weston does)
 xdg_shell protocol (weston apps don't run without it)
+
+to fix
+------
+connman configuration
+the crash
 
 done
 ----

@@ -1,4 +1,3 @@
-clock and calendar
 touch window drag/resize
 long-press menu
 dbus menubar & tray
@@ -21,4 +20,5 @@ some custom window decorations
 launcher menu based on desktop files
 launchers for more apps: qtcreator and a browser at least
 -c for config
+clock and calendar
 

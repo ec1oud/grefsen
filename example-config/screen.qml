@@ -39,6 +39,8 @@ Image {
             icon: "preferences-system-network"
         }
 
+        PanelClock { }
+
         QuitButton { }
 
         Shortcut {

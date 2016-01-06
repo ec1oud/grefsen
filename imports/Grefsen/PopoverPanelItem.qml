@@ -5,7 +5,7 @@ MouseArea {
     width: parent.width
     height: width
 
-    property Component popover: undefined
+    property Component popover: null
 
     Loader {
         id: loader

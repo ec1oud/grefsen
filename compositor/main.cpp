@@ -38,6 +38,7 @@
 **
 ****************************************************************************/
 
+#include <iostream>
 #include <QtCore/QUrl>
 #include <QtCore/QDebug>
 
@@ -83,7 +84,7 @@ extern "C" void signalHandler(int signal)
         break;
     case 0: // child
         kill(grefsonPID, 9);
-        fprintf(stderr, "crashed (PID %d): respawn %s\n", grefsonPID, grefsonExecutablePath.constData());
+        fprintf(stderr, "crashed (PID %lld SIG %d): respawn %s\n", grefsonPID, signal, grefsonExecutablePath.constData());
         execl(grefsonExecutablePath.constData(), grefsonExecutablePath.constData(), (char *) 0);
         _exit(EXIT_FAILURE);
     default: // parent
@@ -146,6 +147,11 @@ static void screenCheck()
     }
 }
 
+void printUsageAndExit() {
+    std::cout << "Usage: grefsen [-r] [-c configdir]" << std::endl;
+    exit(1);
+}
+
 int main(int argc, char *argv[])
 {
     if (!qEnvironmentVariableIsSet("QT_XCB_GL_INTEGRATION"))
@@ -159,6 +165,8 @@ int main(int argc, char *argv[])
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
     grefsonPID = QCoreApplication::applicationPid();
 
+    if (app.arguments().contains(QLatin1String("--help")))
+        printUsageAndExit();
     if (app.arguments().contains(QLatin1String("-r"))) // respawn on crash
         setupSignalHandler();
     screenCheck();

@@ -1,16 +1,17 @@
--c for config; test nested
+clock and calendar
 touch window drag/resize
 long-press menu
 dbus menubar & tray
 xwayland: root window transparent, or under the grefsen desktop background? or rootless?
 probably hard: decorate X windows (like Weston does)
-xdg_shell protocol (weston apps don't run without it)
+xdg_shell protocol (weston and gtk apps don't run without it)
 
 to fix
 ------
-connman configuration
-the crash
+connman configuration - can't always turn technologies on and off
+the crash when killing applications via the titlebar close button
 click outside popups to close
+can't run grefsen inside grefsen (or is it impossible?)
 
 done
 ----
@@ -18,4 +19,5 @@ basic sidebar with a basic launcher for konsole
 some custom window decorations
 launcher menu based on desktop files
 launchers for more apps: qtcreator and a browser at least
+-c for config
 

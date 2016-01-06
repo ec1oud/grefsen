@@ -50,7 +50,7 @@ WaylandOutput {
                 Loader {
                     id: desktopLoader
                     anchors.fill: parent
-                    source: "file://" + Grefsen.env.home + ".config/grefsen/screen.qml"
+                    source: "file://" + Grefsen.env.grefsenconfig + "screen.qml"
                 }
             }
             Item {

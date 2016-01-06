@@ -1,5 +1,6 @@
 #include <QDir>
 #include <QJSEngine>
+#include <QCoreApplication>
 #include <QLoggingCategory>
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
@@ -14,12 +15,25 @@ Q_LOGGING_CATEGORY(lcRegistration, "grefsen.registration")
 static const char *ModuleName = "Grefsen";
 static QJSValue launcherModelSingleton;
 
+static QString ensureFinalSlash(const QString &path)
+{
+    if (path.endsWith('/'))
+        return path;
+    return path + QLatin1String("/");
+}
+
 static QJSValue environmentSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
 
     QJSValue v = scriptEngine->newObject();
-    v.setProperty("home", QDir::homePath() + "/");
+    v.setProperty(QLatin1String("home"), QDir::homePath() + "/");
+    const QStringList &args = QCoreApplication::arguments();
+    int argi = args.indexOf(QLatin1String("-c"));
+    if (argi > 0 && args.length() > argi + 1)
+        v.setProperty(QLatin1String("grefsenconfig"), ensureFinalSlash(args[argi + 1]));
+    else
+        v.setProperty(QLatin1String("grefsenconfig"), QDir::homePath() + "/.config/grefsen/");
     return v;
 }
 

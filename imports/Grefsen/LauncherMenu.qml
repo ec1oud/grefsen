@@ -29,7 +29,10 @@ HoverArea {
             width: height
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            onClicked: searchField.text = ""
+            onClicked: {
+                LauncherModel.reset()
+                searchField.text = ""
+            }
             Text {
                 anchors.centerIn: parent
                 font.family: "FontAwesome"

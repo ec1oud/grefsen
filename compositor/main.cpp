@@ -15,21 +15,21 @@
 **
 ****************************************************************************/
 
-#include <iostream>
-#include <QtCore/QUrl>
-#include <QtCore/QDebug>
-
-#include <QtGui/QGuiApplication>
-
-#include <QtQml/QQmlApplicationEngine>
-#include <QtQml/qqml.h>
+#include <QCommandLineParser>
+#include <QDebug>
 #include <QDebug>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFontDatabase>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QUrl>
+#include <QWindow>
+
+#include <QtQml/qqml.h>
+#include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickItem>
-#include <QScreen>
-#include <QWindow>
 
 #include "processlauncher.h"
 #include "stackableitem.h"
@@ -37,16 +37,19 @@
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
+#include <sys/prctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/prctl.h>
 
 static QLatin1String glassPaneName("glassPane");
-
 static QByteArray grefsonExecutablePath;
 static qint64 grefsonPID;
 static void *signalHandlerStack;
+static QString logFilePath;
+static QElapsedTimer sinceStartup;
+
+QString grefsenConfigDirPath(QDir::homePath() + "/.config/grefsen/");
 
 extern "C" void signalHandler(int signal)
 {
@@ -110,6 +113,42 @@ static void setupSignalHandler()
             qWarning("Failed to install signal handler for signal \"%s\"", strsignal(signalsToHandle[i]));
 }
 
+void qtMsgLog(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    static QFile log(logFilePath);
+    if (!log.isOpen())
+        log.open(QIODevice::WriteOnly | QIODevice::Text);
+    char typeChar = ' ';
+    switch (type) {
+    case QtDebugMsg:
+        typeChar = 'd';
+        break;
+    case QtInfoMsg:
+        typeChar = 'i';
+        break;
+    case QtWarningMsg:
+        typeChar = 'W';
+        break;
+    case QtCriticalMsg:
+        typeChar = '!';
+        break;
+    case QtFatalMsg:
+        typeChar = 'F';
+    }
+    char buf[64];
+    qint64 ts = sinceStartup.elapsed();
+    snprintf(buf, 64, "[%6lld.%03lld %c] ", ts / 1000, ts % 1000, typeChar);
+    log.write(buf);
+    if (context.function) {
+        snprintf(buf, 64, "%s:%d: ", context.function, context.line);
+        log.write(buf);
+    }
+    log.write(msg.toUtf8());
+    log.write("\n");
+    if (type == QtFatalMsg)
+        abort();
+}
+
 static void registerTypes()
 {
     qmlRegisterType<WaylandProcessLauncher>("com.theqtcompany.wlprocesslauncher", 1, 0, "ProcessLauncher");
@@ -124,13 +163,9 @@ static void screenCheck()
     }
 }
 
-void printUsageAndExit() {
-    std::cout << "Usage: grefsen [-r] [-c configdir]" << std::endl;
-    exit(1);
-}
-
 int main(int argc, char *argv[])
 {
+    sinceStartup.start();
     if (!qEnvironmentVariableIsSet("QT_XCB_GL_INTEGRATION"))
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl"); // use xcomposite-glx if no EGL
     if (!qEnvironmentVariableIsSet("QT_WAYLAND_DISABLE_WINDOWDECORATION"))
@@ -138,14 +173,41 @@ int main(int argc, char *argv[])
     if (!qEnvironmentVariableIsSet("QT_LABS_CONTROLS_STYLE"))
         qputenv("QT_LABS_CONTROLS_STYLE", "Universal");
     QGuiApplication app(argc, argv);
+    //QCoreApplication::setApplicationName("grefsen"); // defaults to name of the executable
+    QCoreApplication::setApplicationVersion("0.1");
 //    app.setAttribute(Qt::AA_DisableHighDpiScaling); // better use the env variable... but that's not enough on eglfs
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
     grefsonPID = QCoreApplication::applicationPid();
 
-    if (app.arguments().contains(QLatin1String("--help")))
-        printUsageAndExit();
-    if (app.arguments().contains(QLatin1String("-r"))) // respawn on crash
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Grefsen Qt/Wayland compositor");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption respawnOption(QStringList() << "r" << "respawn",
+            QCoreApplication::translate("main", "respawn grefsen after a crash"));
+    parser.addOption(respawnOption);
+
+    QCommandLineOption logFileOption(QStringList() << "l" << "log",
+            QCoreApplication::translate("main", "redirect all debug/warning/error output to a log file"),
+            QCoreApplication::translate("main", "file path"));
+    parser.addOption(logFileOption);
+
+    QCommandLineOption configDirOption(QStringList() << "c" << "config",
+            QCoreApplication::translate("main", "load config files from the given directory (default is ~/.config/grefsen)"),
+            QCoreApplication::translate("main", "directory path"));
+    parser.addOption(configDirOption);
+
+    parser.process(app);
+    if (parser.isSet(respawnOption))
         setupSignalHandler();
+    if (parser.isSet(configDirOption))
+        grefsenConfigDirPath = parser.value(configDirOption);
+    if (parser.isSet(logFileOption)) {
+        logFilePath = parser.value(logFileOption);
+        qInstallMessageHandler(qtMsgLog);
+    }
+
     screenCheck();
 
     {

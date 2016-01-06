@@ -5,6 +5,7 @@ dbus menubar & tray
 xwayland: root window transparent, or under the grefsen desktop background? or rootless?
 probably hard: decorate X windows (like Weston does)
 xdg_shell protocol (weston and gtk apps don't run without it)
+device hotplugging?
 
 to fix
 ------

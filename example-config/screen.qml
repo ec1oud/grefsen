@@ -1,10 +1,9 @@
 import QtQuick 2.6
-import Grefsen 1.0 as Grefsen // workaround for QTBUG-50219
 import Grefsen 1.0
 
 Image {
     fillMode: Image.PreserveAspectCrop
-    source: Grefsen.env.home + ".config/grefsen/Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg"
+    source: Env.grefsenconfig + "Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg"
     //source: "qrc:/images/background.jpg"
 
     property bool fullscreen: true // TODO doesn't really fit here

@@ -19,7 +19,7 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtWayland.Compositor 1.0
-import Grefsen 1.0 as Grefsen
+import Grefsen 1.0
 
 WaylandOutput {
     id: output
@@ -50,7 +50,7 @@ WaylandOutput {
                 Loader {
                     id: desktopLoader
                     anchors.fill: parent
-                    source: "file://" + Grefsen.env.grefsenconfig + "screen.qml"
+                    source: "file://" + Env.grefsenconfig + "screen.qml"
                 }
             }
             Item {

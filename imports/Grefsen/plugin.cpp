@@ -64,8 +64,8 @@ public:
         qCDebug(lcRegistration) << uri;
         Q_ASSERT(uri == QLatin1String(ModuleName));
         qmlRegisterType<HoverArea>(uri, 1, 0, "HoverArea");
-        qmlRegisterSingletonType(ModuleName, 1, 0, "env", environmentSingletonProvider);
-        qmlRegisterSingletonType(ModuleName, 1, 0, "launcherModel", launcherModelSingletonProvider);
+        qmlRegisterSingletonType(ModuleName, 1, 0, "Env", environmentSingletonProvider);
+        qmlRegisterSingletonType(ModuleName, 1, 0, "LauncherModel", launcherModelSingletonProvider);
     }
 };
 

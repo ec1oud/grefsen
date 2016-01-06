@@ -1,8 +1,8 @@
 import QtQuick 2.5
 import Qt.labs.controls 1.0
-import Grefsen 1.0 as Grefsen
+import Grefsen 1.0
 
-Grefsen.HoverArea {
+HoverArea {
     id: root
     width: 200
 //    height: Math.min(1000, list.implicitHeight)
@@ -23,7 +23,7 @@ Grefsen.HoverArea {
         width: parent.width - 12
         x: 6; y: 6
         focus: true
-        onTextChanged: Grefsen.launcherModel.substringFilter = text
+        onTextChanged: LauncherModel.substringFilter = text
         MouseArea {
             height: searchField.height
             width: height
@@ -46,11 +46,11 @@ Grefsen.HoverArea {
         anchors.bottomMargin: 0
         anchors.margins: 6
         clip: true
-        model: Grefsen.launcherModel.applicationMenu
+        model: LauncherModel.applicationMenu
         delegate: MouseArea {
             width: parent.width
             height: 32
-            onClicked: Grefsen.launcherModel.select(modelData)
+            onClicked: LauncherModel.select(modelData)
 
             Rectangle {
                 radius: 2

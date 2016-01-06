@@ -1,5 +1,5 @@
 import QtQuick 2.5
-import Grefsen 1.0 as Grefsen
+import Grefsen 1.0
 
 MouseArea {
     id: root
@@ -13,7 +13,7 @@ MouseArea {
     }
     onClicked: root.checked = !checked
 
-    Grefsen.LauncherMenu {
+    LauncherMenu {
         anchors.left: parent.right
         visible: root.checked
         onClose: root.checked = false

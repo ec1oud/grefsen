@@ -1,6 +1,6 @@
 import QtQuick 2.1
 import QtGraphicalEffects 1.0
-import Grefsen 1.0 as Grefsen
+import Grefsen 1.0
 
 /*!
     A panel which slides out from the left edge of the screen.
@@ -82,7 +82,7 @@ Flickable {
                 spacing: 6
             }
         }
-        Grefsen.HoverArea {
+        HoverArea {
             anchors.fill: parent
             anchors.rightMargin: -10
             onEntered: root.open()

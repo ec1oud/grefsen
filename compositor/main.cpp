@@ -172,6 +172,8 @@ int main(int argc, char *argv[])
         qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
     if (!qEnvironmentVariableIsSet("QT_LABS_CONTROLS_STYLE"))
         qputenv("QT_LABS_CONTROLS_STYLE", "Universal");
+    if (!qEnvironmentVariableIsSet("QT_QPA_PLATFORMTHEME"))
+        qputenv("QT_QPA_PLATFORMTHEME", "generic");
     QGuiApplication app(argc, argv);
     //QCoreApplication::setApplicationName("grefsen"); // defaults to name of the executable
     QCoreApplication::setApplicationVersion("0.1");

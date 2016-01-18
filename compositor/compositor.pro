@@ -1,5 +1,6 @@
 QT += gui qml quick
 CONFIG += link_pkgconfig
+QMAKE_CXXFLAGS += -std=c++11
 TARGET = ../grefsen
 
 SOURCES += *.cpp

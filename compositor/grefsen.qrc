@@ -6,5 +6,6 @@
         <file>qml/Chrome.qml</file>
         <file>fonts/FontAwesome.otf</file>
         <file>images/grefsen-logo-on-silhouette.png</file>
+        <file>fonts/manzanit.pfb</file>
     </qresource>
 </RCC>

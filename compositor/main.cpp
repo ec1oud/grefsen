@@ -217,6 +217,9 @@ int main(int argc, char *argv[])
         if (!fd.families().contains(QLatin1String("FontAwesome")))
             if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
                 qWarning("failed to load FontAwesome from resources");
+        if (!fd.families().contains(QLatin1String("Manzanita")))
+            if (QFontDatabase::addApplicationFont(":/fonts/manzanit.pfb"))
+                qWarning("failed to load Manzanita font from resources");
     }
 
     registerTypes();

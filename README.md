@@ -12,6 +12,9 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
   * Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
   * otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
 * for the Connman network manager popover (optional): [libconnman-qt](https://git.merproject.org/mer-core/libconnman-qt)
+* recommended: [freefonts](ftp://ftp.ibiblio.org/pub/linux/X11/fonts/freefonts-0.10.tar.gz) but hopefully your distro has that as a package
+  * the clock uses Manzanita, which is also installed as a resource in the executable, just in case
+  * WindsorDemi is another nice font, but it will fall back to others if that is not installed 
 
 # Building
 

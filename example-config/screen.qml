@@ -3,8 +3,8 @@ import Grefsen 1.0
 
 Image {
     fillMode: Image.PreserveAspectCrop
+    // download from https://commons.wikimedia.org/wiki/File:Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg
     source: Env.grefsenconfig + "Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg"
-    //source: "qrc:/images/background.jpg"
 
     property bool fullscreen: true // TODO doesn't really fit here
     // TODO set the icon theme
@@ -25,6 +25,7 @@ Image {
         }
 
         LauncherIcon {
+            // the Qt WebKit example; replace with your favorite Wayland-compatible browser
             path: "fancybrowser"
             icon: "internet-web-browser"
         }
@@ -34,10 +35,13 @@ Image {
             icon: "quassel"
         }
 
+        /*
+        // depends on https://git.merproject.org/mer-core/libconnman-qt
         PopoverTrayIcon {
             popover: ConnmanPopover { }
             icon: "preferences-system-network"
         }
+        */
 
         PanelClock { }
 

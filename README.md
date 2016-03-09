@@ -51,3 +51,22 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=0 # don't embiggen stuff on "high-res" displa
 # try to restart if it crashes; write a log file
 ~/src/grefsen/grefsen -r -l /tmp/grefsen.log
 ```
+
+The set of applications you can run inside is mostly limited to those
+that are built with Qt 5, so far.  That includes a lot of KDE applications.
+It is intended to eventually be able to run weston and GTK3 apps too;
+that's mainly a matter of qtwayland having the XDG shell support finished.
+Grefsen does not include an embedded X server yet, but it might be possible.
+
+The application menu uses libqtxdg to find .desktop files and .menu files
+in a way which is compliant with the 
+[XDG menu spec](https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html),
+which means that you have some control over the contents of the menu, if you
+don't mind editing XML files.  But grefsen does not try to prevent you from
+running incompatible applications: they will simply fail to launch.  So you
+might want a custom menu just for grefsen, whereas by default you will probably
+see all the same applications as you do in your usual desktop environment.
+
+[YAT](https://github.com/jorgen/yat) is another terminal alternative.
+It's planned to have better touchscreen support soon (flicking with your
+finger, text selection when you drag a mouse), whereas konsole still doesn't.

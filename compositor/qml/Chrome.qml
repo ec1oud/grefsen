@@ -163,7 +163,7 @@ StackableItem {
     }
     function requestSize(w, h) {
         //console.log("request size " + w + ", " + h)
-        surfaceItem.shellSurface.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), ShellSurface.DefaultEdge)
+        surfaceItem.shellSurface.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {
@@ -235,7 +235,7 @@ StackableItem {
         return Qt.point(x, y)
     }
 
-    ShellSurfaceItem {
+    WlShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
         property bool isPopup: false
@@ -248,22 +248,26 @@ StackableItem {
         y: titlebarHeight
 
 
-        property var shellSurface: ShellSurface {
-            function moveRelativeToSurface(surface, relativePositon) {
-                var item = findItemForSurface(surface)
-                if (item !== undefined) {
-                    rootChrome.x = relativePositon.x + item.x
-                    rootChrome.y = relativePositon.y + item.y  + item.titlebarHeight
-                }
+        function moveRelativeToSurface(surface, relativePositon) {
+            var item = findItemForSurface(surface)
+            if (item !== undefined) {
+                rootChrome.x = relativePositon.x + item.x
+                rootChrome.y = relativePositon.y + item.y  + item.titlebarHeight
             }
+        }
 
+        shellSurface: WlShellSurface {
+        }
+
+        Connections {
+            target: shellSurface
             onSetPopup: {
                 surfaceItem.isPopup = true
-                moveRelativeToSurface(parentSurface, relativeToParent)
+                surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)
             }
             onSetTransient: {
                 surfaceItem.isTransient = true
-                moveRelativeToSurface(parentSurface, relativeToParent)
+                surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)
             }
             onSetFullScreen: {
                 surfaceItem.isFullscreen = true
@@ -271,16 +275,16 @@ StackableItem {
                 rootChrome.y = 0
             }
         }
+
         onSurfaceDestroyed: {
             view.bufferLock = true;
             destroyAnimationImpl.start();
         }
-        Connections {
-            target: surface
-            onSizeChanged: {
-                surfaceItem.valid = !surface.cursorSurface && surface.size.width > 0 && surface.size.height > 0
-            }
+
+        onWidthChanged: {
+            valid =  !surface.cursorSurface && surface.size.width > 0 && surface.size.height > 0
         }
+
         onValidChanged:  {
             if (valid && !isPopup && !isFullscreen) {
                 if (!isTransient) {
@@ -296,5 +300,4 @@ StackableItem {
             }
         }
     }
-
 }

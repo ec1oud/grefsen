@@ -40,18 +40,13 @@ WaylandCompositor {
     }
 
     extensions: [
-        Shell {
+        WlShell {
             id: defaultShell
 
 
             onCreateShellSurface: {
                 var item = chromeComponent.createObject(defaultOutput.surfaceArea, { "surface": surface } );
-                item.shellSurface.initialize(defaultShell, surface, resource);
                 item.findPositionForWindow()
-            }
-
-            Component.onCompleted: {
-                initialize();
             }
         }
     ]

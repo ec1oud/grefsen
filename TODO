@@ -1,9 +1,15 @@
+eglfs: touch doesn't work
+raise/lower
+way to get in/out of fullscreen mode
+alt-tab
+alt-drag or win-drag
+ctrl-alt-f key to get back to other consoles (chvt)
+map caps lock to control (QTBUG-53183)
 touch window drag/resize
 long-press menu
 dbus menubar & tray
 xwayland: root window transparent, or under the grefsen desktop background? or rootless?
 probably hard: decorate X windows (like Weston does)
-xdg_shell protocol (weston and gtk apps don't run without it)
 device hotplugging?
 
 to fix
@@ -21,4 +27,5 @@ launcher menu based on desktop files
 launchers for more apps: qtcreator and a browser at least
 -c for config
 clock and calendar
+xdg_shell protocol (weston and gtk apps don't run without it)
 

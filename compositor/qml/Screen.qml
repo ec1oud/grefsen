@@ -57,6 +57,20 @@ WaylandOutput {
                 id: compositorArea
                 anchors.fill: parent
             }
+            Loader {
+                anchors.fill: parent
+                source: "Keyboard.qml"
+            }
+/*
+            WaylandCursorItem {
+                id: cursor
+                inputEventsEnabled: false
+                x: mouseTracker.mouseX - hotspotX
+                y: mouseTracker.mouseY - hotspotY
+
+                inputDevice: output.compositor.defaultInputDevice
+            }
+*/
             Item {
                 id: glassPane
                 objectName: "glassPane"

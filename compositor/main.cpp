@@ -155,9 +155,9 @@ static void registerTypes()
     qmlRegisterType<StackableItem>("com.theqtcompany.wlcompositor", 1, 0, "StackableItem");
 }
 
-static void screenCheck()
+static void screenCheck(QList<QScreen *> &screens)
 {
-    foreach (const QScreen *scr, QGuiApplication::screens()) {
+    foreach (const QScreen *scr, screens) {
         qDebug() << "Screen" << scr->name() << scr->geometry() << scr->physicalSize()
                  << "DPI: log" << scr->logicalDotsPerInch() << "phys" << scr->physicalDotsPerInch();
     }
@@ -181,38 +181,58 @@ int main(int argc, char *argv[])
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
     grefsonPID = QCoreApplication::applicationPid();
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription("Grefsen Qt/Wayland compositor");
-    parser.addHelpOption();
-    parser.addVersionOption();
-
-    QCommandLineOption respawnOption(QStringList() << "r" << "respawn",
-            QCoreApplication::translate("main", "respawn grefsen after a crash"));
-    parser.addOption(respawnOption);
-
-    QCommandLineOption logFileOption(QStringList() << "l" << "log",
-            QCoreApplication::translate("main", "redirect all debug/warning/error output to a log file"),
-            QCoreApplication::translate("main", "file path"));
-    parser.addOption(logFileOption);
-
-    QCommandLineOption configDirOption(QStringList() << "c" << "config",
-            QCoreApplication::translate("main", "load config files from the given directory (default is ~/.config/grefsen)"),
-            QCoreApplication::translate("main", "directory path"));
-    parser.addOption(configDirOption);
-
-    parser.process(app);
-    if (parser.isSet(respawnOption))
-        setupSignalHandler();
-    if (parser.isSet(configDirOption))
-        grefsenConfigDirPath = parser.value(configDirOption);
-    if (parser.isSet(logFileOption)) {
-        logFilePath = parser.value(logFileOption);
-        qInstallMessageHandler(qtMsgLog);
-    }
-
-    screenCheck();
-
+    QList<QScreen *> screens = QGuiApplication::screens();
     {
+        QCommandLineParser parser;
+        parser.setApplicationDescription("Grefsen Qt/Wayland compositor");
+        parser.addHelpOption();
+        parser.addVersionOption();
+
+        QCommandLineOption respawnOption(QStringList() << "r" << "respawn",
+                QCoreApplication::translate("main", "respawn grefsen after a crash"));
+        parser.addOption(respawnOption);
+
+        QCommandLineOption logFileOption(QStringList() << "l" << "log",
+                QCoreApplication::translate("main", "redirect all debug/warning/error output to a log file"),
+                QCoreApplication::translate("main", "file path"));
+        parser.addOption(logFileOption);
+
+        QCommandLineOption configDirOption(QStringList() << "c" << "config",
+                QCoreApplication::translate("main", "load config files from the given directory (default is ~/.config/grefsen)"),
+                QCoreApplication::translate("main", "directory path"));
+        parser.addOption(configDirOption);
+
+        QCommandLineOption screenOption(QStringList() << "s" << "screen",
+                                           QCoreApplication::translate("main", "send output to the given screen"),
+                                           QCoreApplication::translate("main", "screen"));
+        parser.addOption(screenOption);
+
+        parser.process(app);
+        if (parser.isSet(respawnOption))
+            setupSignalHandler();
+        if (parser.isSet(configDirOption))
+            grefsenConfigDirPath = parser.value(configDirOption);
+        if (parser.isSet(logFileOption)) {
+            logFilePath = parser.value(logFileOption);
+            qInstallMessageHandler(qtMsgLog);
+        }
+        if (parser.isSet(screenOption)) {
+            QStringList scrNames = parser.values(screenOption);
+            QList<QScreen *> keepers;
+            foreach (QScreen *scr, screens)
+                if (scrNames.contains(scr->name(), Qt::CaseInsensitive))
+                    keepers << scr;
+            if (keepers.isEmpty()) {
+                qWarning() << "None of the screens" << scrNames << "exist; available screens:";
+                foreach (QScreen *scr, screens)
+                    qWarning() << "   " << scr->name() << scr->geometry();
+                return -1;
+            }
+            screens = keepers;
+        }
+
+        screenCheck(screens);
+
         QFontDatabase fd;
         if (!fd.families().contains(QLatin1String("FontAwesome")))
             if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf"))
@@ -231,7 +251,18 @@ int main(int argc, char *argv[])
     appEngine.rootContext()->setContextProperty(glassPaneName,
         appEngine.rootObjects().first()->findChild<QQuickItem*>(glassPaneName));
 
-//    if (app.arguments().contains(QLatin1String("-f"))) ... TODO find the window, make it fullscreen
+    QObject *root = appEngine.rootObjects().first();
+    QList<QWindow *> windows = root->findChildren<QWindow *>();
+    auto windowIter = windows.begin();
+    auto screenIter = screens.begin();
+    while (windowIter != windows.end() && screenIter != screens.end()) {
+        QWindow * window = *windowIter;
+        QScreen * screen = *screenIter;
+        window->setScreen(screen);
+        window->setGeometry(screen->geometry());
+        ++windowIter;
+        ++screenIter;
+    }
 
     return app.exec();
 }

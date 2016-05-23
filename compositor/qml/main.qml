@@ -48,7 +48,8 @@ WaylandCompositor {
             id: defaultShell
 
             onShellSurfaceCreated: {
-                chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": shellSurface } );
+                // For now, only Qt programs can be expected to use WlShell, and we've told them not to decorate themselves
+                chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": shellSurface, "decorationVisible": true } );
             }
         },
         XdgShell {

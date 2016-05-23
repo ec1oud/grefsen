@@ -27,6 +27,7 @@ StackableItem {
     //property alias valid: surfaceItem.valid
     //property alias explicitlyHidden: surfaceItem.explicitlyHidden
     property alias shellSurface: surfaceItem.shellSurface
+    property bool decorationVisible: false
 
     property alias destroyAnimation : destroyAnimationImpl
 
@@ -44,7 +45,7 @@ StackableItem {
         radius: marginWidth
         border.color: (resizeArea.pressed || resizeArea.containsMouse) ? "#ffc02020" :"#305070a0"
         color: "#50ffffff"
-        visible: !surfaceItem.isFullscreen
+        visible: rootChrome.decorationVisible && !surfaceItem.isFullscreen
 
         MouseArea {
             id: resizeArea
@@ -278,6 +279,7 @@ StackableItem {
             }
             onSetPopup: {
                 surfaceItem.isPopup = true
+                decoration.visible = false
                 surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)
             }
             onSetTransient: {
@@ -300,8 +302,10 @@ StackableItem {
             valid =  !surface.cursorSurface && surface.size.width > 0 && surface.size.height > 0
         }
 
-        onValidChanged:  {
-            if (valid && !isPopup && !isFullscreen) {
+        onValidChanged: if (valid) {
+            if (isFullscreen) {
+                rootChrome.requestSize(defaultOutput.surfaceArea.width, defaultOutput.surfaceArea.height)
+            } else {
                 if (!isTransient) {
                     var w = surface.size.width
                     var h = surface.size.height
@@ -310,8 +314,6 @@ StackableItem {
                     rootChrome.y = pos.y
                 }
                 createAnimationImpl.start()
-            } else if (valid && isFullscreen) {
-                rootChrome.requestSize(defaultOutput.surfaceArea.width, defaultOutput.surfaceArea.height)
             }
         }
     }

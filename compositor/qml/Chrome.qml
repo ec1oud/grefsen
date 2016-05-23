@@ -261,11 +261,11 @@ StackableItem {
         y: titlebarHeight
 
 
-        function moveRelativeToSurface(surface, relativePositon) {
+        function moveRelativeToSurface(surface, relativePosition) {
             var item = findItemForSurface(surface)
             if (item !== undefined) {
-                rootChrome.x = relativePositon.x + item.x
-                rootChrome.y = relativePositon.y + item.y  + item.titlebarHeight
+                rootChrome.x = relativePosition.x + item.x
+                rootChrome.y = relativePosition.y + item.y  + item.titlebarHeight
             }
         }
 

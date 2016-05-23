@@ -182,6 +182,18 @@ StackableItem {
         NumberAnimation { target: scaleTransform; property: "xScale"; from: 0; to: 1; duration: 150 }
     }
 
+    SequentialAnimation {
+        id: receivedFocusAnimation
+        ParallelAnimation {
+            NumberAnimation { target: scaleTransform; property: "yScale"; to: 1.02; duration: 100; easing.type: Easing.OutQuad }
+            NumberAnimation { target: scaleTransform; property: "xScale"; to: 1.02; duration: 100; easing.type: Easing.OutQuad }
+        }
+        ParallelAnimation {
+            NumberAnimation { target: scaleTransform; property: "yScale"; to: 1; duration: 100; easing.type: Easing.InOutQuad }
+            NumberAnimation { target: scaleTransform; property: "xScale"; to: 1; duration: 100; easing.type: Easing.InOutQuad }
+        }
+    }
+
     transform: [
         Scale {
             id:scaleTransform
@@ -235,7 +247,7 @@ StackableItem {
         return Qt.point(x, y)
     }
 
-    WlShellSurfaceItem {
+    ShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
         property bool isPopup: false
@@ -256,11 +268,14 @@ StackableItem {
             }
         }
 
-        shellSurface: WlShellSurface {
-        }
-
         Connections {
             target: shellSurface
+            ignoreUnknownSignals: true
+
+            onActivatedChanged: { // xdg_shell only
+                if (shellSurface.activated)
+                    receivedFocusAnimation.start();
+            }
             onSetPopup: {
                 surfaceItem.isPopup = true
                 surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)

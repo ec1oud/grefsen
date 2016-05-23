@@ -34,12 +34,6 @@ WaylandCompositor {
     }
 
     Component {
-        id: xdgChromeComponent
-        XdgChrome {
-        }
-    }
-
-    Component {
         id: surfaceComponent
         WaylandSurface {
         }
@@ -61,7 +55,7 @@ WaylandCompositor {
             id: xdgShell
 
             onXdgSurfaceCreated: {
-                xdgChromeComponent.createObject(defaultOutput.surfaceArea, { "xdgSurface": xdgSurface } );
+                chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": xdgSurface } );
             }
         },
         TextInputManager {

@@ -6,7 +6,6 @@ Image {
     // download from https://commons.wikimedia.org/wiki/File:Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg
     source: Env.grefsenconfig + "Oslo_mot_Grefsentoppen_fra_Ekeberg.jpg"
 
-    property bool fullscreen: true // TODO doesn't really fit here
     // TODO set the icon theme
 
     LeftSlidePanel {

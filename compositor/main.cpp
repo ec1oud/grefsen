@@ -180,6 +180,7 @@ int main(int argc, char *argv[])
 //    app.setAttribute(Qt::AA_DisableHighDpiScaling); // better use the env variable... but that's not enough on eglfs
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();
     grefsonPID = QCoreApplication::applicationPid();
+    bool windowed = false;
 
     QList<QScreen *> screens = QGuiApplication::screens();
     {
@@ -207,6 +208,10 @@ int main(int argc, char *argv[])
                                            QCoreApplication::translate("main", "screen"));
         parser.addOption(screenOption);
 
+        QCommandLineOption windowOption(QStringList() << "w" << "window",
+                QCoreApplication::translate("main", "run in a window rather than fullscreen"));
+        parser.addOption(windowOption);
+
         parser.process(app);
         if (parser.isSet(respawnOption))
             setupSignalHandler();
@@ -230,6 +235,8 @@ int main(int argc, char *argv[])
             }
             screens = keepers;
         }
+        if (parser.isSet(windowOption))
+            windowed = true;
 
         screenCheck(screens);
 
@@ -248,10 +255,10 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine appEngine;
     appEngine.addImportPath(app.applicationDirPath() + QLatin1String("/imports"));
     appEngine.load(QUrl("qrc:///qml/main.qml"));
-    appEngine.rootContext()->setContextProperty(glassPaneName,
-        appEngine.rootObjects().first()->findChild<QQuickItem*>(glassPaneName));
-
     QObject *root = appEngine.rootObjects().first();
+    root->setProperty("fullscreenAllowed", !windowed);
+    appEngine.rootContext()->setContextProperty(glassPaneName,
+        root->findChild<QQuickItem*>(glassPaneName));
     QList<QWindow *> windows = root->findChildren<QWindow *>();
     auto windowIter = windows.begin();
     auto screenIter = screens.begin();
@@ -259,7 +266,12 @@ int main(int argc, char *argv[])
         QWindow * window = *windowIter;
         QScreen * screen = *screenIter;
         window->setScreen(screen);
-        window->setGeometry(screen->geometry());
+        if (windowed) {
+            window->showNormal();
+        } else {
+            window->setGeometry(screen->geometry());
+            window->showFullScreen();
+        }
         ++windowIter;
         ++screenIter;
     }

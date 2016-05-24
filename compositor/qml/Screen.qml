@@ -34,11 +34,6 @@ WaylandOutput {
         height: 768
         color: "black"
 
-        Component.onCompleted: {
-            if (customizedBackground.hasOwnProperty("fullscreen") && customizedBackground.fullscreen)
-                visibility = Window.FullScreen
-        }
-
         WaylandMouseTracker {
             id: mouseTracker
             anchors.fill: parent
@@ -57,11 +52,11 @@ WaylandOutput {
                 id: compositorArea
                 anchors.fill: parent
             }
+            /*
             Loader {
                 anchors.fill: parent
                 source: "Keyboard.qml"
             }
-/*
             WaylandCursorItem {
                 id: cursor
                 inputEventsEnabled: false

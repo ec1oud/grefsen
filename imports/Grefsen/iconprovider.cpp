@@ -1,6 +1,7 @@
 #include "iconprovider.h"
 #include <qt5xdg/XdgIcon>
 
+#include <QDebug>
 #include <QDir>
 #include <QDirIterator>
 

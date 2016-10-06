@@ -4,10 +4,10 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 
 # Requirements
 
-* Qt 5.7: you need to [build it from the git repo](https://wiki.qt.io/Building_Qt_5_from_Git) for now
+* Qt 5.7
   * qtbase, qtdeclarative, qtwayland
-  * Qt.labs.controls AKA qtquickcontrols2
-  * QtQuick.Controls only for the calendar popover
+  * QtQuick.Controls 2
+  * QtQuick.Controls 1, only for the calendar popover
 * libQtXdg
   * Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
   * otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake

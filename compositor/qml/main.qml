@@ -39,33 +39,36 @@ WaylandCompositor {
         }
     }
 
-    extensions: [
-        WindowManager {
-            id: qtWindowManager
-            onShowIsFullScreenChanged: console.debug("Show is fullscreen hint for Qt applications:", showIsFullScreen)
-        },
-        WlShell {
-            id: defaultShell
+    QtWindowManager {
+        id: qtWindowManager
+        onShowIsFullScreenChanged: console.debug("Show is fullscreen hint for Qt applications:", showIsFullScreen)
+    }
 
-            onShellSurfaceCreated: {
-                // For now, only Qt programs can be expected to use WlShell, and we've told them not to decorate themselves
-                chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": shellSurface, "decorationVisible": true } );
-            }
-        },
-        XdgShell {
-            id: xdgShell
-
-            onXdgSurfaceCreated: {
-                chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": xdgSurface } );
-            }
-        },
-        TextInputManager {
+    WlShell {
+        onWlShellSurfaceCreated: {
+            // Qt programs have been told not to decorate themselves
+            chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": shellSurface, "decorationVisible": true } );
         }
-    ]
+    }
 
-    onCreateSurface: {
+    XdgShellV5 {
+        property variant viewsBySurface: ({})
+        onXdgSurfaceCreated: {
+            var item = chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": xdgSurface } );
+            viewsBySurface[xdgSurface.surface] = item;
+        }
+        onXdgPopupCreated: {
+            var parentView = viewsBySurface[xdgPopup.parentSurface];
+            var item = chromeComponent.createObject(parentView, { "shellSurface": xdgPopup } );
+            viewsBySurface[xdgPopup.surface] = item;
+        }
+    }
+
+    TextInputManager {
+    }
+
+    onSurfaceRequested: {
         var surface = surfaceComponent.createObject(comp, { } );
         surface.initialize(comp, client, id, version);
-
     }
 }

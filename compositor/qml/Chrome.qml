@@ -294,7 +294,7 @@ StackableItem {
         }
 
         onSurfaceDestroyed: {
-            view.bufferLock = true;
+            bufferLock = true;
             destroyAnimationImpl.start();
         }
 

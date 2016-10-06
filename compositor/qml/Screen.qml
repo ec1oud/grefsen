@@ -37,7 +37,7 @@ WaylandOutput {
         WaylandMouseTracker {
             id: mouseTracker
             anchors.fill: parent
-            enableWSCursor: true
+            windowSystemCursorEnabled: true
 
             Item {
                 id: background
@@ -51,6 +51,14 @@ WaylandOutput {
             Item {
                 id: compositorArea
                 anchors.fill: parent
+            }
+            WaylandCursorItem {
+                id: cursor
+                inputEventsEnabled: false
+                x: mouseTracker.mouseX
+                y: mouseTracker.mouseY
+
+                seat: output.compositor.defaultSeat
             }
             /*
             Loader {

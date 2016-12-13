@@ -12,6 +12,7 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
   * Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
   * otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
 * for the Connman network manager popover (optional): [libconnman-qt](https://git.merproject.org/mer-core/libconnman-qt)
+* FontAwesome, but it's a submodule here
 * recommended: [freefonts](http://ibiblio.org/pub/linux/X11/fonts/freefonts-0.10.tar.gz) but hopefully your distro has that as a package
   * the clock uses Manzanita, which is also installed as a resource in the executable, just in case
   * WindsorDemi is another nice font, but it will fall back to others if that is not installed 
@@ -19,6 +20,7 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 # Building
 
 ```
+git submodule update --init --recursive
 qmake
 make
 ```
@@ -51,6 +53,13 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=0 # don't embiggen stuff on "high-res" displa
 # try to restart if it crashes; write a log file
 ~/src/grefsen/grefsen -r -l /tmp/grefsen.log
 ```
+
+If you are on the console and have the problem that the keyboard, mouse etc.
+don't work (which should be fixed in Qt 5.6 and above, theoretically) you can
+try various input plugins (after rebooting via ssh, or the power button ;-) by adding
+```-plugin EvdevTouch -plugin EvdevMouse -plugin EvdevTablet -plugin EvdevKeyboard```
+or
+```-plugin libinput```
 
 The set of applications you can run inside is mostly limited to those
 that are built with Qt 5, so far.  That includes a lot of KDE applications.

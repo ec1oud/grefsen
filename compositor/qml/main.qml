@@ -15,6 +15,7 @@
 **
 ****************************************************************************/
 
+import QtQml 2.2
 import QtQuick 2.6
 import QtWayland.Compositor 1.0
 
@@ -23,8 +24,16 @@ WaylandCompositor {
 
     property var primarySurfacesArea: null
 
-    Screen {
-        compositor: comp
+    Instantiator {
+        id: screens
+        model: Qt.application.screens
+
+        delegate: Screen {
+            compositor: comp
+            targetScreen: modelData
+            Component.onCompleted: if (!comp.defaultOutput) comp.defaultOutput = this
+            position: Qt.point(virtualX, virtualY)
+        }
     }
 
     Component {

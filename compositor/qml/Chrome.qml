@@ -56,12 +56,10 @@ StackableItem {
             property int pressY
             property int startW
             property int startH
-            property bool pressed: false
 
             //bitfield: top, left, bottom, right
             property int edges
             onPressed: {
-                pressed = true
                 edges = 0
                 pressX = mouse.x; pressY = mouse.y
                 startW = rootChrome.width; startH = rootChrome.height
@@ -70,7 +68,6 @@ StackableItem {
                 if (mouse.x > rootChrome.width - titlebarHeight)
                     edges |= 8 //right edge
             }
-            onReleased: pressed = false
             onMouseXChanged: {
                 if (pressed) {
                     var w = startW
@@ -249,7 +246,6 @@ StackableItem {
         }
 
         onSurfaceDestroyed: {
-            bufferLock = true;
             destroyAnimationImpl.start();
         }
 

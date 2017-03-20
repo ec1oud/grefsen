@@ -26,6 +26,8 @@ WaylandOutput {
     property variant viewsBySurface: ({})
     property alias surfaceArea: compositorArea // Chrome instances are parented to compositorArea
     property alias targetScreen: win.screen
+    sizeFollowsWindow: true
+
     window: Window {
         id: win
         property Item customizedBackground: desktopLoader.item

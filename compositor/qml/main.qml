@@ -22,8 +22,6 @@ import QtWayland.Compositor 1.0
 WaylandCompositor {
     id: comp
 
-    property var primarySurfacesArea: null
-
     Instantiator {
         id: screens
         model: Qt.application.screens
@@ -54,30 +52,41 @@ WaylandCompositor {
     }
 
     WlShell {
-        onWlShellSurfaceCreated: {
-            // Qt programs have been told not to decorate themselves
-            chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": shellSurface, "decorationVisible": true } );
-        }
+        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface)
     }
 
     XdgShellV5 {
-        property variant viewsBySurface: ({})
-        onXdgSurfaceCreated: {
-            var item = chromeComponent.createObject(defaultOutput.surfaceArea, { "shellSurface": xdgSurface } );
-            viewsBySurface[xdgSurface.surface] = item;
-        }
-        onXdgPopupCreated: {
-            var parentView = viewsBySurface[xdgPopup.parentSurface];
-            var item = chromeComponent.createObject(parentView, { "shellSurface": xdgPopup } );
-            viewsBySurface[xdgPopup.surface] = item;
-        }
+        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface)
+        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup)
     }
 
     TextInputManager {
     }
 
-    onSurfaceRequested: {
-        var surface = surfaceComponent.createObject(comp, { } );
-        surface.initialize(comp, client, id, version);
+    function createShellSurfaceItem(shellSurface, moveItem, output) {
+        var parentSurfaceItem = output.viewsBySurface[shellSurface.parentSurface];
+        var parent = parentSurfaceItem || output.surfaceArea;
+        var item = chromeComponent.createObject(parent, {
+            "shellSurface": shellSurface,
+            "moveItem": moveItem,
+            "output": output,
+            "decorationVisible": true
+        });
+        if (parentSurfaceItem) {
+            item.x += output.position.x;
+            item.y += output.position.y;
+        }
+        output.viewsBySurface[shellSurface.surface] = item;
+    }
+
+    function handleShellSurfaceCreated(shellSurface) {
+        var moveItem = moveItemComponent.createObject(defaultOutput.surfaceArea, {
+            "x": screens.objectAt(0).position.x,
+            "y": screens.objectAt(0).position.y,
+            "width": Qt.binding(function() { return shellSurface.surface.width; }),
+            "height": Qt.binding(function() { return shellSurface.surface.height; })
+        });
+        for (var i = 0; i < screens.count; ++i)
+            createShellSurfaceItem(shellSurface, moveItem, screens.objectAt(i));
     }
 }

@@ -23,12 +23,11 @@ import Grefsen 1.0
 
 WaylandOutput {
     id: output
+    property variant viewsBySurface: ({})
     property alias surfaceArea: compositorArea // Chrome instances are parented to compositorArea
     property alias targetScreen: win.screen
     window: Window {
         id: win
-
-        property QtObject output
         property Item customizedBackground: desktopLoader.item
 
         x: screen.virtualX

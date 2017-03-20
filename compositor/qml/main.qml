@@ -41,9 +41,8 @@ WaylandCompositor {
     }
 
     Component {
-        id: surfaceComponent
-        WaylandSurface {
-        }
+        id: moveItemComponent
+        Item { }
     }
 
     QtWindowManager {

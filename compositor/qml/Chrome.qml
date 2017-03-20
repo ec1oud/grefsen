@@ -23,10 +23,8 @@ import com.theqtcompany.wlcompositor 1.0
 
 StackableItem {
     id: rootChrome
-    property alias surface: surfaceItem.surface
-    //property alias valid: surfaceItem.valid
-    //property alias explicitlyHidden: surfaceItem.explicitlyHidden
     property alias shellSurface: surfaceItem.shellSurface
+    property alias moveItem: surfaceItem.moveItem
     property bool decorationVisible: false
 
     property alias destroyAnimation : destroyAnimationImpl
@@ -34,6 +32,8 @@ StackableItem {
     property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
     property int titlebarHeight : surfaceItem.isPopup || surfaceItem.isFullscreen ? 0 : 25
 
+    x: surfaceItem.moveItem.x - surfaceItem.output.geometry.x
+    y: surfaceItem.moveItem.y - surfaceItem.output.geometry.y
     height: surfaceItem.height + marginWidth + titlebarHeight
     width: surfaceItem.width + 2 * marginWidth
     visible: surfaceItem.valid
@@ -116,7 +116,7 @@ StackableItem {
             MouseArea {
                 id: moveArea
                 anchors.fill: parent
-                drag.target: rootChrome
+                drag.target: surfaceItem.moveItem
                 hoverEnabled: true
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton
                 onPressed: {
@@ -204,40 +204,6 @@ StackableItem {
         }
     ]
 
-    function findItemForSurface(surface) {
-        var result = undefined
-        var n = defaultOutput.surfaceArea.children.length
-        var i = 0
-        for (i = 0; i < n; i++) {
-            var item = defaultOutput.surfaceArea.children[i]
-            if (item.surface === surface) {
-                result = item;
-                break;
-            }
-        }
-        return result
-    }
-
-    function findPositionForWindow() {
-        var screenW = defaultOutput.surfaceArea.width
-        var screenH = defaultOutput.surfaceArea.height
-
-        var topLeftTaken = false;
-        var n = defaultOutput.surfaceArea.children.length
-        var i = 0
-        for (i = 0; i < n; i++) {
-            var item = defaultOutput.surfaceArea.children[i]
-            if (item.width > 10 && item.x < 5 && item.y < 5) {
-                topLeftTaken = true
-                break;
-            }
-        }
-        if (topLeftTaken) {
-            rootChrome.x = Math.random() * screenW
-            rootChrome.y = Math.random() * screenH
-        }
-    }
-
     function adjustPositionForWindow(xp, yp, w, h) {
         var screenW = defaultOutput.surfaceArea.width
         var screenH = defaultOutput.surfaceArea.height
@@ -260,15 +226,6 @@ StackableItem {
         x: marginWidth
         y: titlebarHeight
 
-
-        function moveRelativeToSurface(surface, relativePosition) {
-            var item = findItemForSurface(surface)
-            if (item !== undefined) {
-                rootChrome.x = relativePosition.x + item.x
-                rootChrome.y = relativePosition.y + item.y  + item.titlebarHeight
-            }
-        }
-
         Connections {
             target: shellSurface
             ignoreUnknownSignals: true
@@ -280,11 +237,9 @@ StackableItem {
             onSetPopup: {
                 surfaceItem.isPopup = true
                 decoration.visible = false
-                surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)
             }
             onSetTransient: {
                 surfaceItem.isTransient = true
-                surfaceItem.moveRelativeToSurface(parentSurface, relativeToParent)
             }
             onSetFullScreen: {
                 surfaceItem.isFullscreen = true
@@ -310,8 +265,8 @@ StackableItem {
                     var w = surface.size.width
                     var h = surface.size.height
                     var pos = adjustPositionForWindow(rootChrome.x, rootChrome.y, w, h)
-                    rootChrome.x = pos.x
-                    rootChrome.y = pos.y
+                    moveItem.x = pos.x
+                    moveItem.y = pos.y
                 }
                 createAnimationImpl.start()
             }

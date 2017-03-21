@@ -31,11 +31,6 @@ WaylandOutput {
     window: Window {
         id: win
         property Item customizedBackground: desktopLoader.item
-
-        x: screen.virtualX
-        y: screen.virtualY
-        width: 1024
-        height: 768
         color: "black"
 
         WaylandMouseTracker {

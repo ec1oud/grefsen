@@ -41,7 +41,6 @@ WaylandOutput {
         WaylandMouseTracker {
             id: mouseTracker
             anchors.fill: parent
-            windowSystemCursorEnabled: true
 
             Item {
                 id: background

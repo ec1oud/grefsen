@@ -32,6 +32,7 @@ WaylandOutput {
         id: win
         property Item customizedBackground: desktopLoader.item
         color: "black"
+        title: "Grefsen on " + Screen.name
 
         WaylandMouseTracker {
             id: mouseTracker

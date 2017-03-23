@@ -31,6 +31,7 @@ StackableItem {
 
     property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
     property int titlebarHeight : surfaceItem.isPopup || surfaceItem.isFullscreen ? 0 : 25
+    property string screenName: ""
 
     x: surfaceItem.moveItem.x - surfaceItem.output.geometry.x
     y: surfaceItem.moveItem.y - surfaceItem.output.geometry.y
@@ -117,6 +118,7 @@ StackableItem {
                 hoverEnabled: true
                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton
                 onPressed: {
+                    surfaceItem.moveItem.moving = true
                     if (mouse.button === Qt.LeftButton) {
                         rootChrome.raise()
                     } else if (mouse.button === Qt.RightButton) {
@@ -126,6 +128,7 @@ StackableItem {
                         rootChrome.lower()
                     }
                 }
+                onReleased: surfaceItem.moveItem.moving = false
                 //cursorShape: Qt.OpenHandCursor
             }
 
@@ -201,16 +204,6 @@ StackableItem {
         }
     ]
 
-    function adjustPositionForWindow(xp, yp, w, h) {
-        var screenW = defaultOutput.surfaceArea.width
-        var screenH = defaultOutput.surfaceArea.height
-
-        var x = Math.min(xp, screenW - w)
-        var y = Math.min(yp, screenH - h)
-
-        return Qt.point(x, y)
-    }
-
     ShellSurfaceItem {
         id: surfaceItem
         property bool valid: false
@@ -218,7 +211,7 @@ StackableItem {
         property bool isTransient: false
         property bool isFullscreen: false
 
-        opacity: moveArea.drag.active ? 0.5 : 1.0
+        opacity: surfaceItem.moveItem.moving ? 0.5 : 1.0
 
         x: marginWidth
         y: titlebarHeight
@@ -255,17 +248,26 @@ StackableItem {
 
         onValidChanged: if (valid) {
             if (isFullscreen) {
-                rootChrome.requestSize(defaultOutput.surfaceArea.width, defaultOutput.surfaceArea.height)
+                rootChrome.requestSize(output.geometry.width, output.geometry.height)
             } else {
-                if (!isTransient) {
-                    var w = surface.size.width
-                    var h = surface.size.height
-                    var pos = adjustPositionForWindow(rootChrome.x, rootChrome.y, w, h)
-                    moveItem.x = pos.x
-                    moveItem.y = pos.y
-                }
                 createAnimationImpl.start()
             }
+        }
+    }
+
+    Rectangle {
+        visible: surfaceItem.moveItem.moving
+        border.color: "white"
+        color: "black"
+        radius: 5
+        anchors.centerIn: parent
+        width: height * 10
+        height: moveGeometryText.implicitHeight * 1.5
+        Text {
+            id: moveGeometryText
+            color: "white"
+            anchors.centerIn: parent
+            text: Math.round(rootChrome.x) + "," + Math.round(rootChrome.y) + " on " + rootChrome.screenName
         }
     }
 }

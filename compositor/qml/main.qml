@@ -42,7 +42,9 @@ WaylandCompositor {
 
     Component {
         id: moveItemComponent
-        Item { }
+        Item {
+            property bool moving: false
+        }
     }
 
     QtWindowManager {
@@ -69,6 +71,7 @@ WaylandCompositor {
             "shellSurface": shellSurface,
             "moveItem": moveItem,
             "output": output,
+            "screenName": output.targetScreen.name,
             "decorationVisible": true
         });
         if (parentSurfaceItem) {

@@ -10,6 +10,7 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
   * QtQuick.Controls 1, only for the calendar popover
 * libQtXdg
   * Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
+  * Ubuntu: apt-get install libqt5xdg-dev
   * otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
 * for the Connman network manager popover (optional): [libconnman-qt](https://git.merproject.org/mer-core/libconnman-qt)
 * FontAwesome, but it's a submodule here

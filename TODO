@@ -1,8 +1,14 @@
 eglfs: touch doesn't work
 raise/lower
 way to get in/out of fullscreen mode
+window decoration theme rather than server-side decorations
+    because access to the QWindow is easier than dealing with limitations of Wayland protocol for window management
 alt-tab
 alt-drag or win-drag
+virtual desktops
+window flinging onto other display
+better hover handling
+3-finger window gestures
 ctrl-alt-f key to get back to other consoles (chvt)
 map caps lock to control (QTBUG-53183)
 touch window drag/resize

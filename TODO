@@ -8,7 +8,7 @@ alt-drag or win-drag
 virtual desktops
 window flinging onto other display
 better hover handling
-3-finger window gestures
+other 3-finger window gestures?
 ctrl-alt-f key to get back to other consoles (chvt)
 map caps lock to control (QTBUG-53183)
 touch window drag/resize
@@ -34,4 +34,4 @@ launchers for more apps: qtcreator and a browser at least
 -c for config
 clock and calendar
 xdg_shell protocol (weston and gtk apps don't run without it)
-
+3-finger pinch to resize and move windows

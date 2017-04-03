@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.6
+import Qt.labs.handlers 1.0
 import QtWayland.Compositor 1.0
 import QtGraphicalEffects 1.0
 import com.theqtcompany.wlcompositor 1.0
@@ -26,7 +27,6 @@ StackableItem {
     property alias shellSurface: surfaceItem.shellSurface
     property alias moveItem: surfaceItem.moveItem
     property bool decorationVisible: false
-
     property alias destroyAnimation : destroyAnimationImpl
 
     property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
@@ -252,6 +252,20 @@ StackableItem {
             } else {
                 createAnimationImpl.start()
             }
+        }
+    }
+
+    PinchHandler {
+        id: pinch3
+        objectName: "3-finger pinch"
+        minimumPointCount: 3
+        maximumPointCount: 3
+        minimumScale: 0.1
+        minimumRotation: 0
+        maximumRotation: 0
+        onActiveChanged: if (!active) {
+            rootChrome.requestSize(width * scale, height * scale)
+            rootChrome.scale = 1
         }
     }
 

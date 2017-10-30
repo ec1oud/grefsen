@@ -112,28 +112,31 @@ StackableItem {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            MouseArea {
-                id: moveArea
-                anchors.fill: parent
-                drag.target: surfaceItem.moveItem
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton
-                onPressed: {
-                    surfaceItem.moveItem.moving = true
-                    if (mouse.button === Qt.LeftButton) {
-                        rootChrome.raise()
-                    } else if (mouse.button === Qt.RightButton) {
-                        //console.log("right button")
-                        // TODO add menu
-                    } else if (mouse.button === Qt.MiddleButton) {
-                        rootChrome.lower()
-                    }
+            DragHandler {
+                id: titlebarDrag
+                target: surfaceItem.moveItem
+                property var movingBinding: Binding {
+                    target: surfaceItem.moveItem
+                    property: "moving"
+                    value: titlebarDrag.active
                 }
-                onReleased: surfaceItem.moveItem.moving = false
                 //cursorShape: Qt.OpenHandCursor
             }
 
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                gesturePolicy: TapHandler.DragThreshold
+                onTapped: rootChrome.raise()
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.MiddleButton
+                gesturePolicy: TapHandler.DragThreshold
+                onTapped: rootChrome.lower()
+            }
+
             MouseArea {
+                // TODO can't get rid of this until some PointerHandler has hover detection
                 id: closeButton
                 visible: !surfaceItem.isTransient
                 height: 20

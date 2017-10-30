@@ -17,7 +17,7 @@ class LauncherModel : public QObject
 
 public:
     explicit LauncherModel(QJSEngine *engine, QObject *parent = 0);
-    QJSValue allApplications();
+    QJSValue allApplications() { return m_allApps; }
     QJSValue applicationMenu() { return m_list.property(QStringLiteral("items")); }
 
     QString substringFilter() const { return m_substringFilter; }

@@ -28,6 +28,7 @@ StackableItem {
     property var topLevel
     property alias moveItem: surfaceItem.moveItem
     property bool decorationVisible: false
+    property bool moving: surfaceItem.moveItem ? surfaceItem.moveItem.moving : false
     property alias destroyAnimation : destroyAnimationImpl
 
     property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
@@ -53,23 +54,28 @@ StackableItem {
             id: resizeArea
             anchors.fill: parent
             hoverEnabled: true
-            //cursorShape: Qt.SizeFDiagCursor
+
+            property int edges // bitfield: top, left, bottom, right
+            property bool cursorToRight: containsMouse && (mouseX > width - marginWidth)
+            property bool cursorToBottom: containsMouse && (mouseY > height - marginWidth)
+            cursorShape: rootChrome.moving ? Qt.ClosedHandCursor : (cursorToRight || edges & 8 ?
+                (cursorToBottom || edges & 4 ? Qt.SizeFDiagCursor : Qt.SizeHorCursor) :
+                (cursorToBottom || edges & 4 ? Qt.SizeVerCursor : Qt.BlankCursor))
             property int pressX
             property int pressY
             property int startW
             property int startH
 
-            //bitfield: top, left, bottom, right
-            property int edges
             onPressed: {
                 edges = 0
                 pressX = mouse.x; pressY = mouse.y
                 startW = rootChrome.width; startH = rootChrome.height
-                if (mouse.y > rootChrome.height - titlebarHeight)
-                    edges |= 4 //bottom edge
-                if (mouse.x > rootChrome.width - titlebarHeight)
-                    edges |= 8 //right edge
+                if (cursorToBottom)
+                    edges |= 4
+                if (cursorToRight)
+                    edges |= 8
             }
+            onReleased: edges = 0
             onMouseXChanged: {
                 if (pressed) {
                     var w = startW
@@ -120,7 +126,6 @@ StackableItem {
                     property: "moving"
                     value: titlebarDrag.active
                 }
-                //cursorShape: Qt.OpenHandCursor
             }
 
             TapHandler {
@@ -215,7 +220,7 @@ StackableItem {
         property bool isTransient: false
         property bool isFullscreen: false
 
-        opacity: surfaceItem.moveItem.moving ? 0.5 : 1.0
+        opacity: moving ? 0.5 : 1.0
         inputEventsEnabled: !pinch3.active && !metaDragHandler.active && !altDragHandler.active
 
         x: marginWidth
@@ -297,7 +302,7 @@ StackableItem {
     }
 
     Rectangle {
-        visible: surfaceItem.moveItem.moving || metaDragHandler.active || altDragHandler.active
+        visible: moving || metaDragHandler.active || altDragHandler.active
         border.color: "white"
         color: "black"
         radius: 5

@@ -293,7 +293,7 @@ StackableItem {
     }
 
     Rectangle {
-        visible: surfaceItem.moveItem.moving
+        visible: surfaceItem.moveItem.moving || metaDragHandler.active || altDragHandler.active
         border.color: "white"
         color: "black"
         radius: 5

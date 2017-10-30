@@ -149,7 +149,7 @@ StackableItem {
                 anchors.margins: marginWidth
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: shellSurface.surface.client.close()
+                onClicked: topLevel.sendClose()
                 hoverEnabled: true
                 RectangularGlow {
                     id: effect

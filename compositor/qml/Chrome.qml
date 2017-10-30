@@ -212,9 +212,32 @@ StackableItem {
         property bool isFullscreen: false
 
         opacity: surfaceItem.moveItem.moving ? 0.5 : 1.0
+        inputEventsEnabled: !pinch3.active && !metaDragHandler.active && !altDragHandler.active
 
         x: marginWidth
         y: titlebarHeight
+
+        DragHandler {
+            id: metaDragHandler
+            acceptedModifiers: Qt.MetaModifier
+            target: surfaceItem.moveItem
+            property var movingBinding: Binding {
+                target: surfaceItem.moveItem
+                property: "moving"
+                value: metaDragHandler.active
+            }
+        }
+
+        DragHandler {
+            id: altDragHandler
+            acceptedModifiers: Qt.AltModifier
+            target: surfaceItem.moveItem
+            property var movingBinding: Binding {
+                target: surfaceItem.moveItem
+                property: "moving"
+                value: altDragHandler.active
+            }
+        }
 
         Connections {
             target: shellSurface

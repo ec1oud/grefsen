@@ -281,7 +281,7 @@ StackableItem {
         onValidChanged: if (valid) {
             if (isFullscreen) {
                 rootChrome.requestSize(output.geometry.width, output.geometry.height)
-            } else {
+            } else if (decorationVisible) {
                 createAnimationImpl.start()
             }
         }

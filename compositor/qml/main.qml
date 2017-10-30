@@ -53,17 +53,17 @@ WaylandCompositor {
     }
 
     WlShell {
-        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface, shellSurface)
+        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface, shellSurface, true)
     }
 
     XdgShellV5 {
-        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface, xdgSurface)
-        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup, xdgPopup)
+        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface, xdgSurface, true)
+        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup, xdgPopup, false)
     }
 
     XdgShellV6 {
-        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel)
-        onPopupCreated: handleShellSurfaceCreated(xdgPopup, popup)
+        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel, true)
+        onPopupCreated: handleShellSurfaceCreated(xdgSurface, popup, false)
     }
 
     TextInputManager {
@@ -86,7 +86,7 @@ WaylandCompositor {
         property string model: ""
     }
 
-    function createShellSurfaceItem(shellSurface, topLevel, moveItem, output) {
+    function createShellSurfaceItem(shellSurface, topLevel, moveItem, output, decorate) {
         var parentSurfaceItem = output.viewsBySurface[shellSurface.parentSurface];
         var parent = parentSurfaceItem || output.surfaceArea;
         var item = chromeComponent.createObject(parent, {
@@ -95,7 +95,7 @@ WaylandCompositor {
             "moveItem": moveItem,
             "output": output,
             "screenName": output.targetScreen.name,
-            "decorationVisible": true
+            "decorationVisible": decorate
         });
         if (parentSurfaceItem) {
             item.x += output.position.x;
@@ -104,7 +104,7 @@ WaylandCompositor {
         output.viewsBySurface[shellSurface.surface] = item;
     }
 
-    function handleShellSurfaceCreated(shellSurface, topLevel) {
+    function handleShellSurfaceCreated(shellSurface, topLevel, decorate) {
         var moveItem = moveItemComponent.createObject(defaultOutput.surfaceArea, {
             "x": screens.objectAt(0).position.x,
             "y": screens.objectAt(0).position.y,
@@ -112,6 +112,6 @@ WaylandCompositor {
             "height": Qt.binding(function() { return shellSurface.surface.height; })
         });
         for (var i = 0; i < screens.count; ++i)
-            createShellSurfaceItem(shellSurface, topLevel, moveItem, screens.objectAt(i));
+            createShellSurfaceItem(shellSurface, topLevel, moveItem, screens.objectAt(i), decorate);
     }
 }

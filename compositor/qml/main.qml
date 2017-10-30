@@ -52,27 +52,28 @@ WaylandCompositor {
     }
 
     WlShell {
-        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface)
+        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface, shellSurface)
     }
 
     XdgShellV5 {
-        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface)
-        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup)
+        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface, xdgSurface)
+        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup, xdgPopup)
     }
 
     XdgShellV6 {
-        onToplevelCreated: handleShellSurfaceCreated(xdgSurface)
-        onPopupCreated: handleShellSurfaceCreated(xdgPopup)
+        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel)
+        onPopupCreated: handleShellSurfaceCreated(xdgPopup, popup)
     }
 
     TextInputManager {
     }
 
-    function createShellSurfaceItem(shellSurface, moveItem, output) {
+    function createShellSurfaceItem(shellSurface, topLevel, moveItem, output) {
         var parentSurfaceItem = output.viewsBySurface[shellSurface.parentSurface];
         var parent = parentSurfaceItem || output.surfaceArea;
         var item = chromeComponent.createObject(parent, {
             "shellSurface": shellSurface,
+            "topLevel": topLevel,
             "moveItem": moveItem,
             "output": output,
             "screenName": output.targetScreen.name,
@@ -85,7 +86,7 @@ WaylandCompositor {
         output.viewsBySurface[shellSurface.surface] = item;
     }
 
-    function handleShellSurfaceCreated(shellSurface) {
+    function handleShellSurfaceCreated(shellSurface, topLevel) {
         var moveItem = moveItemComponent.createObject(defaultOutput.surfaceArea, {
             "x": screens.objectAt(0).position.x,
             "y": screens.objectAt(0).position.y,
@@ -93,6 +94,6 @@ WaylandCompositor {
             "height": Qt.binding(function() { return shellSurface.surface.height; })
         });
         for (var i = 0; i < screens.count; ++i)
-            createShellSurfaceItem(shellSurface, moveItem, screens.objectAt(i));
+            createShellSurfaceItem(shellSurface, topLevel, moveItem, screens.objectAt(i));
     }
 }

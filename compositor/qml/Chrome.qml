@@ -25,6 +25,7 @@ import com.theqtcompany.wlcompositor 1.0
 StackableItem {
     id: rootChrome
     property alias shellSurface: surfaceItem.shellSurface
+    property var topLevel
     property alias moveItem: surfaceItem.moveItem
     property bool decorationVisible: false
     property alias destroyAnimation : destroyAnimationImpl
@@ -163,8 +164,8 @@ StackableItem {
         }
     }
     function requestSize(w, h) {
-        //console.log("request size " + w + ", " + h)
-        surfaceItem.shellSurface.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
+//        console.log("request size " + w + ", " + h + " on " + surfaceItem)
+        topLevel.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {

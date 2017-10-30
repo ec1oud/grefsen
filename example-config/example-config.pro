@@ -1,2 +1,2 @@
 TEMPLATE = aux
-OTHER_FILES = *.qml
+OTHER_FILES = *.qml *.conf

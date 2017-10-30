@@ -176,6 +176,7 @@ int main(int argc, char *argv[])
         qputenv("QT_QPA_PLATFORMTHEME", "generic");
     QGuiApplication app(argc, argv);
     //QCoreApplication::setApplicationName("grefsen"); // defaults to name of the executable
+    QCoreApplication::setOrganizationName("grefsen");
     QCoreApplication::setApplicationVersion("0.1");
 //    app.setAttribute(Qt::AA_DisableHighDpiScaling); // better use the env variable... but that's not enough on eglfs
     grefsonExecutablePath = app.applicationFilePath().toLocal8Bit();

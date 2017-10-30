@@ -17,6 +17,7 @@
 
 import QtQuick 2.6
 import QtWayland.Compositor 1.1
+import Qt.labs.settings 1.0
 
 WaylandCompositor {
     id: comp
@@ -66,6 +67,23 @@ WaylandCompositor {
     }
 
     TextInputManager {
+    }
+
+    defaultSeat.keymap {
+        layout: keymapSettings.layout
+        variant: keymapSettings.variant
+        options: keymapSettings.options
+        rules: keymapSettings.rules
+        model: keymapSettings.model
+    }
+    Settings {
+        id: keymapSettings
+        category: "keymap"
+        property string layout: "us"
+        property string variant: "intl"
+        property string options: "grp:shifts_toggle,compose:ralt,ctrl:nocaps"
+        property string rules: ""
+        property string model: ""
     }
 
     function createShellSurfaceItem(shellSurface, topLevel, moveItem, output) {

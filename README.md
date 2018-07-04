@@ -1,22 +1,22 @@
 Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 
-<img src="screenshot.jpg" width="600">
+![a screenshot](screenshot.jpg "screenshot")
 
 # Requirements
 
 * Qt 5.9 (if you need 5.7, use the 5.7 branch)
-  * qtbase, qtdeclarative, qtwayland
-  * QtQuick.Controls 2
-  * QtQuick.Controls 1, only for the calendar popover
+  - qtbase, qtdeclarative, qtwayland
+  - QtQuick.Controls 2
+  - QtQuick.Controls 1, only for the calendar popover
 * libQtXdg
-  * Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
-  * Ubuntu: apt-get install libqt5xdg-dev
-  * otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
+  - Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
+  - Ubuntu: apt-get install libqt5xdg-dev
+  - otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
 * for the Connman network manager popover (optional): [libconnman-qt](https://git.merproject.org/mer-core/libconnman-qt)
 * FontAwesome, but it's a submodule here
 * recommended: [freefonts](http://ibiblio.org/pub/linux/X11/fonts/freefonts-0.10.tar.gz) but hopefully your distro has that as a package
-  * the clock uses Manzanita, which is also installed as a resource in the executable, just in case
-  * WindsorDemi is another nice font, but it will fall back to others if that is not installed 
+  - the clock uses Manzanita, which is also installed as a resource in the executable, just in case
+  - WindsorDemi is another nice font, but it will fall back to others if that is not installed
 
 # Building
 
@@ -69,7 +69,7 @@ that's mainly a matter of qtwayland having the XDG shell support finished.
 Grefsen does not include an embedded X server yet, but it might be possible.
 
 The application menu uses libqtxdg to find .desktop files and .menu files
-in a way which is compliant with the 
+in a way which is compliant with the
 [XDG menu spec](https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html),
 which means that you have some control over the contents of the menu, if you
 don't mind editing XML files.  But grefsen does not try to prevent you from

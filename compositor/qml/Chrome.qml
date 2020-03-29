@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.6
+import Qt.labs.handlers 1.0
 import QtWayland.Compositor 1.0
 import QtGraphicalEffects 1.0
 import com.theqtcompany.wlcompositor 1.0
@@ -24,9 +25,10 @@ import com.theqtcompany.wlcompositor 1.0
 StackableItem {
     id: rootChrome
     property alias shellSurface: surfaceItem.shellSurface
+    property var topLevel
     property alias moveItem: surfaceItem.moveItem
     property bool decorationVisible: false
-
+    property bool moving: surfaceItem.moveItem ? surfaceItem.moveItem.moving : false
     property alias destroyAnimation : destroyAnimationImpl
 
     property int marginWidth : surfaceItem.isFullscreen ? 0 : (surfaceItem.isPopup ? 1 : 6)
@@ -52,23 +54,28 @@ StackableItem {
             id: resizeArea
             anchors.fill: parent
             hoverEnabled: true
-            //cursorShape: Qt.SizeFDiagCursor
+
+            property int edges // bitfield: top, left, bottom, right
+            property bool cursorToRight: containsMouse && (mouseX > width - marginWidth)
+            property bool cursorToBottom: containsMouse && (mouseY > height - marginWidth)
+            cursorShape: rootChrome.moving ? Qt.ClosedHandCursor : (cursorToRight || edges & 8 ?
+                (cursorToBottom || edges & 4 ? Qt.SizeFDiagCursor : Qt.SizeHorCursor) :
+                (cursorToBottom || edges & 4 ? Qt.SizeVerCursor : Qt.BlankCursor))
             property int pressX
             property int pressY
             property int startW
             property int startH
 
-            //bitfield: top, left, bottom, right
-            property int edges
             onPressed: {
                 edges = 0
                 pressX = mouse.x; pressY = mouse.y
                 startW = rootChrome.width; startH = rootChrome.height
-                if (mouse.y > rootChrome.height - titlebarHeight)
-                    edges |= 4 //bottom edge
-                if (mouse.x > rootChrome.width - titlebarHeight)
-                    edges |= 8 //right edge
+                if (cursorToBottom)
+                    edges |= 4
+                if (cursorToRight)
+                    edges |= 8
             }
+            onReleased: edges = 0
             onMouseXChanged: {
                 if (pressed) {
                     var w = startW
@@ -104,35 +111,37 @@ StackableItem {
 
             Text {
                 color: "gray"
-                text: surfaceItem.shellSurface ? surfaceItem.shellSurface.title : ""
+                text: surfaceItem.shellSurface.title !== undefined ? surfaceItem.shellSurface.title : ""
                 anchors.margins: marginWidth
 
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            MouseArea {
-                id: moveArea
-                anchors.fill: parent
-                drag.target: surfaceItem.moveItem
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.MiddleButton |Qt.RightButton
-                onPressed: {
-                    surfaceItem.moveItem.moving = true
-                    if (mouse.button === Qt.LeftButton) {
-                        rootChrome.raise()
-                    } else if (mouse.button === Qt.RightButton) {
-                        //console.log("right button")
-                        // TODO add menu
-                    } else if (mouse.button === Qt.MiddleButton) {
-                        rootChrome.lower()
-                    }
+            DragHandler {
+                id: titlebarDrag
+                target: surfaceItem.moveItem
+                property var movingBinding: Binding {
+                    target: surfaceItem.moveItem
+                    property: "moving"
+                    value: titlebarDrag.active
                 }
-                onReleased: surfaceItem.moveItem.moving = false
-                //cursorShape: Qt.OpenHandCursor
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                gesturePolicy: TapHandler.DragThreshold
+                onTapped: rootChrome.raise()
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.MiddleButton
+                gesturePolicy: TapHandler.DragThreshold
+                onTapped: rootChrome.lower()
             }
 
             MouseArea {
+                // TODO can't get rid of this until some PointerHandler has hover detection
                 id: closeButton
                 visible: !surfaceItem.isTransient
                 height: 20
@@ -140,7 +149,7 @@ StackableItem {
                 anchors.margins: marginWidth
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: shellSurface.surface.client.close()
+                onClicked: topLevel.sendClose()
                 hoverEnabled: true
                 RectangularGlow {
                     id: effect
@@ -163,8 +172,8 @@ StackableItem {
         }
     }
     function requestSize(w, h) {
-        //console.log("request size " + w + ", " + h)
-        surfaceItem.shellSurface.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
+//        console.log("request size " + w + ", " + h + " on " + surfaceItem)
+        topLevel.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {
@@ -211,10 +220,33 @@ StackableItem {
         property bool isTransient: false
         property bool isFullscreen: false
 
-        opacity: surfaceItem.moveItem.moving ? 0.5 : 1.0
+        opacity: moving ? 0.5 : 1.0
+        inputEventsEnabled: !pinch3.active && !metaDragHandler.active && !altDragHandler.active
 
         x: marginWidth
         y: titlebarHeight
+
+        DragHandler {
+            id: metaDragHandler
+            acceptedModifiers: Qt.MetaModifier
+            target: surfaceItem.moveItem
+            property var movingBinding: Binding {
+                target: surfaceItem.moveItem
+                property: "moving"
+                value: metaDragHandler.active
+            }
+        }
+
+        DragHandler {
+            id: altDragHandler
+            acceptedModifiers: Qt.AltModifier
+            target: surfaceItem.moveItem
+            property var movingBinding: Binding {
+                target: surfaceItem.moveItem
+                property: "moving"
+                value: altDragHandler.active
+            }
+        }
 
         Connections {
             target: shellSurface
@@ -249,14 +281,28 @@ StackableItem {
         onValidChanged: if (valid) {
             if (isFullscreen) {
                 rootChrome.requestSize(output.geometry.width, output.geometry.height)
-            } else {
+            } else if (decorationVisible) {
                 createAnimationImpl.start()
             }
         }
     }
 
+    PinchHandler {
+        id: pinch3
+        objectName: "3-finger pinch"
+        minimumPointCount: 3
+        maximumPointCount: 3
+        minimumScale: 0.1
+        minimumRotation: 0
+        maximumRotation: 0
+        onActiveChanged: if (!active) {
+            rootChrome.requestSize(width * scale, height * scale)
+            rootChrome.scale = 1
+        }
+    }
+
     Rectangle {
-        visible: surfaceItem.moveItem.moving
+        visible: moving || metaDragHandler.active || altDragHandler.active
         border.color: "white"
         color: "black"
         radius: 5

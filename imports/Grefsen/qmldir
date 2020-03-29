@@ -13,3 +13,4 @@ PopoverTrayIcon 1.0 PopoverTrayIcon.qml
 PopoverPanelItem 1.0 PopoverPanelItem.qml
 QuitButton 1.0 QuitButton.qml
 RightSlidePanel 1.0 RightSlidePanel.qml
+TuioTouchPanel 1.0 TuioTouchPanel.qml

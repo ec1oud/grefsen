@@ -15,9 +15,9 @@
 **
 ****************************************************************************/
 
-import QtQml 2.2
 import QtQuick 2.6
-import QtWayland.Compositor 1.0
+import QtWayland.Compositor 1.1
+import Qt.labs.settings 1.0
 
 WaylandCompositor {
     id: comp
@@ -53,26 +53,49 @@ WaylandCompositor {
     }
 
     WlShell {
-        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface)
+        onWlShellSurfaceCreated: handleShellSurfaceCreated(null, shellSurface, shellSurface, true)
     }
 
     XdgShellV5 {
-        onXdgSurfaceCreated: handleShellSurfaceCreated(xdgSurface)
-        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup)
+        onXdgSurfaceCreated: handleShellSurfaceCreated(null, xdgSurface, xdgSurface, true)
+        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup.parentSurface, xdgPopup, xdgPopup, false)
+    }
+
+    XdgShellV6 {
+        onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
+        onPopupCreated: handleShellSurfaceCreated(popup.parentXdgSurface.surface, xdgSurface, popup, false)
     }
 
     TextInputManager {
     }
 
-    function createShellSurfaceItem(shellSurface, moveItem, output) {
-        var parentSurfaceItem = output.viewsBySurface[shellSurface.parentSurface];
+    defaultSeat.keymap {
+        layout: keymapSettings.layout
+        variant: keymapSettings.variant
+        options: keymapSettings.options
+        rules: keymapSettings.rules
+        model: keymapSettings.model
+    }
+    Settings {
+        id: keymapSettings
+        category: "keymap"
+        property string layout: "us"
+        property string variant: "intl"
+        property string options: "grp:shifts_toggle,compose:ralt,ctrl:nocaps"
+        property string rules: ""
+        property string model: ""
+    }
+
+    function createShellSurfaceItem(parentSurface, shellSurface, topLevel, moveItem, output, decorate) {
+        var parentSurfaceItem = output.viewsBySurface[parentSurface];
         var parent = parentSurfaceItem || output.surfaceArea;
         var item = chromeComponent.createObject(parent, {
             "shellSurface": shellSurface,
+            "topLevel": topLevel,
             "moveItem": moveItem,
             "output": output,
             "screenName": output.targetScreen.name,
-            "decorationVisible": true
+            "decorationVisible": decorate
         });
         if (parentSurfaceItem) {
             item.x += output.position.x;
@@ -81,7 +104,7 @@ WaylandCompositor {
         output.viewsBySurface[shellSurface.surface] = item;
     }
 
-    function handleShellSurfaceCreated(shellSurface) {
+    function handleShellSurfaceCreated(parentSurface, shellSurface, topLevel, decorate) {
         var moveItem = moveItemComponent.createObject(defaultOutput.surfaceArea, {
             "x": screens.objectAt(0).position.x,
             "y": screens.objectAt(0).position.y,
@@ -89,6 +112,6 @@ WaylandCompositor {
             "height": Qt.binding(function() { return shellSurface.surface.height; })
         });
         for (var i = 0; i < screens.count; ++i)
-            createShellSurfaceItem(shellSurface, moveItem, screens.objectAt(i));
+            createShellSurfaceItem(parentSurface, shellSurface, topLevel, moveItem, screens.objectAt(i), decorate);
     }
 }

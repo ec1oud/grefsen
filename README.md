@@ -4,7 +4,7 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 
 # Requirements
 
-* Qt 5.9 (if you need 5.7, use the 5.7 branch)
+* Qt 5.12 (if you need 5.x, use the 5.x branch)
   - qtbase, qtdeclarative, qtwayland
   - QtQuick.Controls 2
   - QtQuick.Controls 1, only for the calendar popover

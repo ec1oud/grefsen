@@ -155,12 +155,16 @@ static void registerTypes()
     qmlRegisterType<StackableItem>("com.theqtcompany.wlcompositor", 1, 0, "StackableItem");
 }
 
-static void screenCheck(QList<QScreen *> &screens)
+static qreal highestDPR(QList<QScreen *> &screens)
 {
-    foreach (const QScreen *scr, screens) {
+    qreal ret = 0;
+    for (const QScreen *scr : screens) {
         qDebug() << "Screen" << scr->name() << scr->geometry() << scr->physicalSize()
-                 << "DPI: log" << scr->logicalDotsPerInch() << "phys" << scr->physicalDotsPerInch();
+                 << "DPI: log" << scr->logicalDotsPerInch() << "phys" << scr->physicalDotsPerInch()
+                 << "DPR" << scr->devicePixelRatio();
+        ret = qMax(ret, scr->devicePixelRatio());
     }
+    return ret;
 }
 
 int main(int argc, char *argv[])
@@ -239,7 +243,14 @@ int main(int argc, char *argv[])
         if (parser.isSet(windowOption))
             windowed = true;
 
-        screenCheck(screens);
+        qreal dpr = highestDPR(screens);
+        if (!qEnvironmentVariableIsSet("XCURSOR_SIZE")) {
+            // QTBUG-67579: we can't have different cursor sizes on different screens
+            // or different windows yet, but we can override globally
+            int cursorSize = int(32 * dpr);
+            qDebug() << "highest DPR" << dpr << "-> cursor size" << cursorSize;
+            qputenv("XCURSOR_SIZE", QByteArray::number(cursorSize));
+        }
 
         QFontDatabase fd;
         if (!fd.families().contains(QLatin1String("FontAwesome")))

@@ -17,8 +17,8 @@
 ****************************************************************************/
 
 import QtQuick 2.12
-import QtWayland.Compositor 1.0
-import QtGraphicalEffects 1.0
+import QtWayland.Compositor 1.12
+import QtGraphicalEffects 1.12
 import com.theqtcompany.wlcompositor 1.0
 
 StackableItem {
@@ -47,7 +47,8 @@ StackableItem {
         radius: marginWidth
         border.color: (resizeArea.pressed || resizeArea.containsMouse) ? "#ffc02020" :"#305070a0"
         color: "#50ffffff"
-        visible: rootChrome.decorationVisible && !surfaceItem.isFullscreen
+        visible: rootChrome.decorationVisible && !surfaceItem.isFullscreen &&
+                 !topLevel || topLevel.decorationMode === XdgToplevel.ServerSideDecoration
 
         MouseArea {
             id: resizeArea

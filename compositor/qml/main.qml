@@ -70,6 +70,10 @@ WaylandCompositor {
         onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
     }
 
+    XdgDecorationManagerV1 {
+        preferredMode: XdgToplevel.ServerSideDecoration
+    }
+
     TextInputManager {
     }
 

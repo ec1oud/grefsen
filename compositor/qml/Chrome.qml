@@ -16,8 +16,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.6
-import Qt.labs.handlers 1.0
+import QtQuick 2.12
 import QtWayland.Compositor 1.0
 import QtGraphicalEffects 1.0
 import com.theqtcompany.wlcompositor 1.0
@@ -172,7 +171,7 @@ StackableItem {
         }
     }
     function requestSize(w, h) {
-//        console.log("request size " + w + ", " + h + " on " + surfaceItem)
+//        console.log("request size " + w + ", " + h + " on " + surfaceItem, "sendConfigure to", topLevel)
         topLevel.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
     }
 

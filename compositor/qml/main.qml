@@ -15,8 +15,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.6
-import QtWayland.Compositor 1.1
+import QtQuick 2.12
+import QtWayland.Compositor 1.12
 import Qt.labs.settings 1.0
 
 WaylandCompositor {
@@ -64,6 +64,10 @@ WaylandCompositor {
     XdgShellV6 {
         onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
         onPopupCreated: handleShellSurfaceCreated(popup.parentXdgSurface.surface, xdgSurface, popup, false)
+    }
+
+    XdgShell {
+        onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
     }
 
     TextInputManager {

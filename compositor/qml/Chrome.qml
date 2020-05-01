@@ -138,12 +138,17 @@ StackableItem {
 
             DragHandler {
                 id: titlebarDrag
-                target: surfaceItem.moveItem
+                target: rootChrome
+                cursorShape: Qt.ClosedHandCursor
                 property var movingBinding: Binding {
                     target: surfaceItem.moveItem
                     property: "moving"
                     value: titlebarDrag.active
                 }
+            }
+
+            HoverHandler {
+                cursorShape: Qt.OpenHandCursor
             }
 
             TapHandler {

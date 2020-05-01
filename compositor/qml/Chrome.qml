@@ -158,33 +158,30 @@ StackableItem {
                 onTapped: rootChrome.lower()
             }
 
-            MouseArea {
-                // TODO can't get rid of this until some PointerHandler has hover detection
+            RectangularGlow {
                 id: closeButton
                 visible: !surfaceItem.isTransient
-                height: 20
-                width: 25
+                height: 8
+                width: 8
                 anchors.margins: marginWidth
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                onClicked: topLevel.sendClose()
-                hoverEnabled: true
-                RectangularGlow {
-                    id: effect
-                    anchors.fill: closeIcon
-                    anchors.margins: 2
-                    glowRadius: 5
-                    cornerRadius: glowRadius
-                    spread: 0.4
-                    color: "red"
-                    opacity: parent.containsMouse ? 0.5 : 0
-                }
+                glowRadius: 8
+                cornerRadius: glowRadius
+                spread: 0.4
+                color: closeButtonHover.hovered ? "#88FF0000" : "transparent"
                 Text {
                     id: closeIcon
                     anchors.centerIn: parent
-                    font.pixelSize: parent.height
+                    font.pixelSize: parent.height + parent.glowRadius
                     font.family: "FontAwesome"
                     text: "\uf00d"
+                }
+                HoverHandler {
+                    id: closeButtonHover
+                }
+                TapHandler {
+                    onTapped: topLevel.sendClose()
                 }
             }
         }

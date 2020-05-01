@@ -16,6 +16,7 @@ dbus menubar & tray
 xwayland: root window transparent, or under the grefsen desktop background? or rootless?
 probably hard: decorate X windows (like Weston does)
 device hotplugging?
+show single-ended-arrow cursor over the resize edge if the window can only be enlarged, not shrunken (idea from MS Teams on macOS)
 
 to fix
 ------

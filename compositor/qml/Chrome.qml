@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2020 Shawn Rutledge
 **
 ** This file is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -16,9 +16,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.12
-import QtWayland.Compositor 1.12
-import QtGraphicalEffects 1.12
+import QtQuick 2.15
+import QtQuick.Window 2.15
+import QtWayland.Compositor 1.15
+import QtGraphicalEffects 1.15
 import com.theqtcompany.wlcompositor 1.0
 
 StackableItem {
@@ -34,6 +35,8 @@ StackableItem {
     property int titlebarHeight : surfaceItem.isPopup || surfaceItem.isFullscreen ? 0 : 25
     property string screenName: ""
 
+    property real resizeAreaWidth: 12
+
     x: surfaceItem.moveItem.x - surfaceItem.output.geometry.x
     y: surfaceItem.moveItem.y - surfaceItem.output.geometry.y
     height: surfaceItem.height + marginWidth + titlebarHeight
@@ -45,50 +48,65 @@ StackableItem {
         anchors.fill: parent
         border.width: 1
         radius: marginWidth
-        border.color: (resizeArea.pressed || resizeArea.containsMouse) ? "#ffc02020" :"#305070a0"
+        border.color: (rightEdgeHover.hovered || bottomEdgeHover.hovered) ? "#ffc02020" :"#305070a0"
         color: "#50ffffff"
         visible: rootChrome.decorationVisible && !surfaceItem.isFullscreen &&
                  !topLevel || topLevel.decorationMode === XdgToplevel.ServerSideDecoration
 
-        MouseArea {
-            id: resizeArea
-            anchors.fill: parent
-            hoverEnabled: true
-
-            property int edges // bitfield: top, left, bottom, right
-            property bool cursorToRight: containsMouse && (mouseX > width - marginWidth)
-            property bool cursorToBottom: containsMouse && (mouseY > height - marginWidth)
-            cursorShape: rootChrome.moving ? Qt.ClosedHandCursor : (cursorToRight || edges & 8 ?
-                (cursorToBottom || edges & 4 ? Qt.SizeFDiagCursor : Qt.SizeHorCursor) :
-                (cursorToBottom || edges & 4 ? Qt.SizeVerCursor : Qt.BlankCursor))
-            property int pressX
-            property int pressY
-            property int startW
-            property int startH
-
-            onPressed: {
-                edges = 0
-                pressX = mouse.x; pressY = mouse.y
-                startW = rootChrome.width; startH = rootChrome.height
-                if (cursorToBottom)
-                    edges |= 4
-                if (cursorToRight)
-                    edges |= 8
+        // TODO write a ResizeHandler for this purpose? otherwise there are up to 8 components for edges and corners
+        Item {
+            id: rightEdgeResizeArea
+            x: parent.width - resizeAreaWidth / 2; width: resizeAreaWidth; height: parent.height - resizeAreaWidth
+            onXChanged: if (horzDragHandler.active) rootChrome.requestSize(
+                        horzDragHandler.initialSize.width + horzDragHandler.translation.x, horzDragHandler.initialSize.height)
+            DragHandler {
+                id: horzDragHandler
+                property size initialSize
+                onActiveChanged: if (active) initialSize = Qt.size(rootChrome.width, rootChrome.height)
+                yAxis.enabled: false
             }
-            onReleased: edges = 0
-            onMouseXChanged: {
-                if (pressed) {
-                    var w = startW
-                    var h = startH
-                    if (edges & 8)
-                        w += mouse.x - pressX
-                    if (edges & 4)
-                        h += mouse.y - pressY
-                    rootChrome.requestSize(w, h)
-                    console.log("resize " + rootChrome + " " + rootChrome.x + ", ", rootChrome.y)
-                }
+            HoverHandler {
+                id: rightEdgeHover
+                cursorShape: Qt.SizeHorCursor
             }
         }
+        Item {
+            id: bottomEdgeResizeArea
+            y: parent.height - resizeAreaWidth / 2; height: resizeAreaWidth; width: parent.width - resizeAreaWidth
+            onYChanged: if (vertDragHandler.active) rootChrome.requestSize(
+                        vertDragHandler.initialSize.width, vertDragHandler.initialSize.height + vertDragHandler.translation.y)
+            DragHandler {
+                id: vertDragHandler
+                property size initialSize
+                onActiveChanged: if (active) initialSize = Qt.size(rootChrome.width, rootChrome.height)
+                xAxis.enabled: false
+            }
+            HoverHandler {
+                id: bottomEdgeHover
+                cursorShape: Qt.SizeVerCursor
+            }
+        }
+        Item {
+            id: bottomRightResizeArea
+            x: parent.width - resizeAreaWidth / 2; y: parent.height - resizeAreaWidth / 2
+            width: resizeAreaWidth; height: parent.height - resizeAreaWidth
+            onXChanged: if (bottomRightDragHandler.active) rootChrome.requestSize(
+                        bottomRightDragHandler.initialSize.width + bottomRightDragHandler.translation.x,
+                        bottomRightDragHandler.initialSize.height + bottomRightDragHandler.translation.y)
+            onYChanged: if (bottomRightDragHandler.active) rootChrome.requestSize(
+                        bottomRightDragHandler.initialSize.width + bottomRightDragHandler.translation.x,
+                        bottomRightDragHandler.initialSize.height + bottomRightDragHandler.translation.y)
+            DragHandler {
+                id: bottomRightDragHandler
+                property size initialSize
+                onActiveChanged: if (active) initialSize = Qt.size(rootChrome.width, rootChrome.height)
+            }
+            HoverHandler {
+                id: bottomRightHover
+                cursorShape: Qt.SizeFDiagCursor
+            }
+        }
+        // end of resizing components
 
         Item {
             id: titlebar
@@ -173,7 +191,9 @@ StackableItem {
     }
     function requestSize(w, h) {
 //        console.log("request size " + w + ", " + h + " on " + surfaceItem, "sendConfigure to", topLevel)
-        topLevel.sendConfigure(Qt.size(w - 2 * marginWidth, h - titlebarHeight - marginWidth), WlShellSurface.DefaultEdge)
+        topLevel.sendConfigure(Qt.size((w - 2 * marginWidth) * Screen.devicePixelRatio,
+                                       (h - titlebarHeight - marginWidth) * Screen.devicePixelRatio),
+                               WlShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {

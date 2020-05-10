@@ -36,7 +36,9 @@ WaylandOutput {
 
         WaylandMouseTracker {
             id: mouseTracker
+            objectName: "wmt on " + Screen.name
             anchors.fill: parent
+            windowSystemCursorEnabled: false
 
             Item {
                 id: background

@@ -57,8 +57,13 @@ StackableItem {
         Item {
             id: rightEdgeResizeArea
             x: parent.width - resizeAreaWidth / 2; width: resizeAreaWidth; height: parent.height - resizeAreaWidth
-            onXChanged: if (horzDragHandler.active) rootChrome.requestSize(
-                        horzDragHandler.initialSize.width + horzDragHandler.translation.x, horzDragHandler.initialSize.height)
+            onXChanged:
+                if (horzDragHandler.active) {
+                    var size = topLevel.sizeForResize(horzDragHandler.initialSize,
+                                                      Qt.point(horzDragHandler.translation.x, horzDragHandler.translation.y),
+                                                      Qt.RightEdge);
+                    topLevel.sendConfigure(size, [3] /*XdgShellToplevel.ResizingState*/ )
+                }
             DragHandler {
                 id: horzDragHandler
                 property size initialSize
@@ -73,8 +78,13 @@ StackableItem {
         Item {
             id: bottomEdgeResizeArea
             y: parent.height - resizeAreaWidth / 2; height: resizeAreaWidth; width: parent.width - resizeAreaWidth
-            onYChanged: if (vertDragHandler.active) rootChrome.requestSize(
-                        vertDragHandler.initialSize.width, vertDragHandler.initialSize.height + vertDragHandler.translation.y)
+            onYChanged:
+                if (vertDragHandler.active) {
+                    var size = topLevel.sizeForResize(vertDragHandler.initialSize,
+                                                      Qt.point(vertDragHandler.translation.x, vertDragHandler.translation.y),
+                                                      Qt.BottomEdge);
+                    topLevel.sendConfigure(size, [3] /*XdgShellToplevel.ResizingState*/ )
+                }
             DragHandler {
                 id: vertDragHandler
                 property size initialSize
@@ -90,12 +100,16 @@ StackableItem {
             id: bottomRightResizeArea
             x: parent.width - resizeAreaWidth / 2; y: parent.height - resizeAreaWidth / 2
             width: resizeAreaWidth; height: parent.height - resizeAreaWidth
-            onXChanged: if (bottomRightDragHandler.active) rootChrome.requestSize(
-                        bottomRightDragHandler.initialSize.width + bottomRightDragHandler.translation.x,
-                        bottomRightDragHandler.initialSize.height + bottomRightDragHandler.translation.y)
-            onYChanged: if (bottomRightDragHandler.active) rootChrome.requestSize(
-                        bottomRightDragHandler.initialSize.width + bottomRightDragHandler.translation.x,
-                        bottomRightDragHandler.initialSize.height + bottomRightDragHandler.translation.y)
+            onXChanged: resize()
+            onYChanged: resize()
+            function resize() {
+                if (bottomRightDragHandler.active) {
+                    var size = topLevel.sizeForResize(bottomRightDragHandler.initialSize,
+                                                      Qt.point(bottomRightDragHandler.translation.x, bottomRightDragHandler.translation.y),
+                                                      Qt.BottomEdge | Qt.RightEdge);
+                    topLevel.sendConfigure(size, [3] /*XdgShellToplevel.ResizingState*/ )
+                }
+            }
             DragHandler {
                 id: bottomRightDragHandler
                 property size initialSize
@@ -190,12 +204,6 @@ StackableItem {
                 }
             }
         }
-    }
-    function requestSize(w, h) {
-//        console.log("request size " + w + ", " + h + " on " + surfaceItem, "sendConfigure to", topLevel)
-        topLevel.sendConfigure(Qt.size((w - 2 * marginWidth) * Screen.devicePixelRatio,
-                                       (h - titlebarHeight - marginWidth) * Screen.devicePixelRatio),
-                               WlShellSurface.DefaultEdge)
     }
 
     SequentialAnimation {
@@ -302,7 +310,7 @@ StackableItem {
 
         onValidChanged: if (valid) {
             if (isFullscreen) {
-                rootChrome.requestSize(output.geometry.width, output.geometry.height)
+                topLevel.sendFullscreen(output.geometry)
             } else if (decorationVisible) {
                 createAnimationImpl.start()
             }
@@ -318,7 +326,9 @@ StackableItem {
         minimumRotation: 0
         maximumRotation: 0
         onActiveChanged: if (!active) {
-            rootChrome.requestSize(width * scale, height * scale)
+            // just a silly way of getting a QSize for sendConfigure()
+            var size = topLevel.sizeForResize(Qt.size(width * scale, height * scale), Qt.point(0, 0), 0);
+            topLevel.sendConfigure(size, [3] /*XdgShellToplevel.ResizingState*/);
             rootChrome.scale = 1
         }
     }

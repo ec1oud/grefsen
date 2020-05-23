@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2015 The Qt Company Ltd.
+** Copyright (C) 2020 Shawn Rutledge
 **
 ** This file is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU Lesser General Public
@@ -53,21 +54,16 @@ WaylandCompositor {
     }
 
     WlShell {
-        onWlShellSurfaceCreated: handleShellSurfaceCreated(null, shellSurface, shellSurface, true)
-    }
-
-    XdgShellV5 {
-        onXdgSurfaceCreated: handleShellSurfaceCreated(null, xdgSurface, xdgSurface, true)
-        onXdgPopupCreated: handleShellSurfaceCreated(xdgPopup.parentSurface, xdgPopup, xdgPopup, false)
+        onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface, shellSurface, true)
     }
 
     XdgShellV6 {
-        onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
-        onPopupCreated: handleShellSurfaceCreated(popup.parentXdgSurface.surface, xdgSurface, popup, false)
+        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel, true)
     }
 
     XdgShell {
-        onToplevelCreated: handleShellSurfaceCreated(null, xdgSurface, toplevel, true)
+        // void toplevelCreated(QWaylandXdgToplevel *toplevel, QWaylandXdgSurface *xdgSurface);
+        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel, true)
     }
 
     XdgDecorationManagerV1 {
@@ -94,8 +90,8 @@ WaylandCompositor {
         property string model: ""
     }
 
-    function createShellSurfaceItem(parentSurface, shellSurface, topLevel, moveItem, output, decorate) {
-        var parentSurfaceItem = output.viewsBySurface[parentSurface];
+    function createShellSurfaceItem(shellSurface, topLevel, moveItem, output, decorate) {
+        var parentSurfaceItem = output.viewsBySurface[shellSurface.parentSurface];
         var parent = parentSurfaceItem || output.surfaceArea;
         var item = chromeComponent.createObject(parent, {
             "shellSurface": shellSurface,
@@ -112,7 +108,7 @@ WaylandCompositor {
         output.viewsBySurface[shellSurface.surface] = item;
     }
 
-    function handleShellSurfaceCreated(parentSurface, shellSurface, topLevel, decorate) {
+    function handleShellSurfaceCreated(shellSurface, topLevel, decorate) {
         var moveItem = moveItemComponent.createObject(defaultOutput.surfaceArea, {
             "x": screens.objectAt(0).position.x,
             "y": screens.objectAt(0).position.y,
@@ -120,6 +116,6 @@ WaylandCompositor {
             "height": Qt.binding(function() { return shellSurface.surface.height; })
         });
         for (var i = 0; i < screens.count; ++i)
-            createShellSurfaceItem(parentSurface, shellSurface, topLevel, moveItem, screens.objectAt(i), decorate);
+            createShellSurfaceItem(shellSurface, topLevel, moveItem, screens.objectAt(i), decorate);
     }
 }

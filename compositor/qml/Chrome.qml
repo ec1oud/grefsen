@@ -72,7 +72,7 @@ StackableItem {
             }
             HoverHandler {
                 id: rightEdgeHover
-                cursorShape: Qt.SizeHorCursor
+                cursorShape: Qt.SizeHorCursor // problem: this so far only sets the EGLFS cursor, not WaylandCursorItem
             }
         }
         Item {

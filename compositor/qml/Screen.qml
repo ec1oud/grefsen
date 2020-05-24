@@ -53,14 +53,6 @@ WaylandOutput {
                 id: compositorArea
                 anchors.fill: parent
             }
-            WaylandCursorItem {
-                id: cursor
-                inputEventsEnabled: false
-                x: mouseTracker.mouseX
-                y: mouseTracker.mouseY
-                seat: output.compositor.defaultSeat
-                visible: mouseTracker.containsMouse
-            }
             /*
             Loader {
                 anchors.fill: parent
@@ -71,6 +63,13 @@ WaylandOutput {
                 id: glassPane
                 objectName: "glassPane"
                 anchors.fill: parent
+            }
+            WaylandCursorItem {
+                id: cursor
+                x: mouseTracker.mouseX
+                y: mouseTracker.mouseY
+                seat: output.compositor.defaultSeat
+                visible: mouseTracker.containsMouse
             }
         }
     }

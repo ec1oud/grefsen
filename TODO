@@ -20,6 +20,10 @@ show single-ended-arrow cursor over the resize edge if the window can only be en
 
 to fix
 ------
+redundant cursor problem:
+    - QT_QPA_EGLFS_HIDECURSOR env var works, but
+    - WaylandCursorItem shows only the entered window's cursor, and doesn't change on leave
+    - cursors set on items within the compositor are only shown via the EGLFS cursor, not WaylandCursorItem
 connman configuration - can't always turn technologies on and off
 the crash when killing applications via the titlebar close button
 click outside popups to close

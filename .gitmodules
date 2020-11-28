@@ -3,4 +3,4 @@
 	url = https://github.com/FortAwesome/Font-Awesome.git
 [submodule "thirdparty/qt-tuio-sender"]
 	path = thirdparty/qt-tuio-sender
-	url = git@github.com:ec1oud/qt-tuio-sender.git
+	url = https://github.com/ec1oud/qt-tuio-sender.git

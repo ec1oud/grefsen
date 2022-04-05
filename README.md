@@ -4,15 +4,13 @@ Grefsen is a Qt/Wayland compositor providing a minimal desktop environment.
 
 # Requirements
 
-* Qt 5.15 (if you need 5.x, use the 5.x branch)
+* Qt 6 (if you need 5.x, use the 5.x branch)
   - qtbase, qtdeclarative, qtwayland
-  - QtQuick.Controls 2
-  - QtQuick.Controls 1, only for the calendar popover
+  - QtQuick.Controls
 * libQtXdg
-  - Arch Linux: install [community/libqtxdg](https://www.archlinux.org/packages/community/x86_64/libqtxdg/)
-  - Ubuntu: apt-get install libqt5xdg-dev
-  - otherwise: build from [github](https://github.com/lxde/libqtxdg) with Qt 5.7 and cmake
+  - build from [github](https://github.com/lxqt/libqtxdg/tree/wip_qt6) with Qt 6 and cmake
 * for the Connman network manager popover (optional): [libconnman-qt](https://git.merproject.org/mer-core/libconnman-qt)
+  or from [github](https://github.com/sailfishos/libconnman-qt)
 * FontAwesome, but it's a submodule here
 * recommended: [freefonts](http://ibiblio.org/pub/linux/X11/fonts/freefonts-0.10.tar.gz) but hopefully your distro has that as a package
   - the clock uses Manzanita, which is also installed as a resource in the executable, just in case

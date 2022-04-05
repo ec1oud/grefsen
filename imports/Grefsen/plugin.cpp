@@ -1,10 +1,7 @@
 #include <QDir>
-#include <QJSEngine>
 #include <QCoreApplication>
 #include <QLoggingCategory>
-#include <QQmlEngine>
-#include <QQmlExtensionPlugin>
-#include <QtQml>
+#include <QtQml/qqmlextensionplugin.h>
 
 #include "iconprovider.h"
 #include "launchermodel.h"

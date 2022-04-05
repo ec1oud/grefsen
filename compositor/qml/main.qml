@@ -16,9 +16,11 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.12
-import QtWayland.Compositor 1.12
-import Qt.labs.settings 1.0
+import QtQuick
+import QtWayland.Compositor
+import QtWayland.Compositor.XdgShell
+import QtWayland.Compositor.WlShell
+import Qt.labs.settings
 
 WaylandCompositor {
     id: comp
@@ -27,7 +29,7 @@ WaylandCompositor {
         id: screens
         model: Qt.application.screens
 
-        delegate: Screen {
+        delegate: Output {
             compositor: comp
             targetScreen: modelData
             Component.onCompleted: if (!comp.defaultOutput) comp.defaultOutput = this
@@ -55,10 +57,6 @@ WaylandCompositor {
 
     WlShell {
         onWlShellSurfaceCreated: handleShellSurfaceCreated(shellSurface, shellSurface, true)
-    }
-
-    XdgShellV6 {
-        onToplevelCreated: handleShellSurfaceCreated(xdgSurface, toplevel, true)
     }
 
     XdgShell {
@@ -101,11 +99,13 @@ WaylandCompositor {
             "screenName": output.targetScreen.name,
             "decorationVisible": decorate
         });
-        if (parentSurfaceItem) {
+        if (parentSurfaceItem !== undefined) {
             item.x += output.position.x;
             item.y += output.position.y;
         }
         output.viewsBySurface[shellSurface.surface] = item;
+        console.log(lcComp, "shellSurface:", shellSurface, "topLevel:", topLevel, "moveItem:", moveItem, "output:", output,
+                    "decorate:", decorate, "parentSurfaceItem:", parentSurfaceItem, "new surface item:", output.viewsBySurface[shellSurface.surface])
     }
 
     function handleShellSurfaceCreated(shellSurface, topLevel, decorate) {
@@ -117,5 +117,10 @@ WaylandCompositor {
         });
         for (var i = 0; i < screens.count; ++i)
             createShellSurfaceItem(shellSurface, topLevel, moveItem, screens.objectAt(i), decorate);
+    }
+
+    LoggingCategory {
+        id: lcComp
+        name: "grefsen.compositor"
     }
 }

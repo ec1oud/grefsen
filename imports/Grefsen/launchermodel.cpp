@@ -64,14 +64,16 @@ void LauncherModel::select(QJSValue sel)
 
 void LauncherModel::exec(QString desktopFilePath)
 {
-    XdgDesktopFile* dtf = XdgDesktopFileCache::getFile(desktopFilePath);
+    XdgDesktopFile dtf;
+    dtf.load(desktopFilePath);
 //qDebug() << desktopFilePath << dtf;
-    if (dtf) {
-        bool ok = dtf->startDetached();
+    if (dtf.isValid()) {
+        bool ok = dtf.startDetached();
         if (Q_UNLIKELY(!ok))
-            emit execFailed(tr("failed to exec '%s'", dtf->value(QStringLiteral("exec")).toString().toLocal8Bit().constData()));
-    } else
-        emit execFailed(tr("failed to find desktop file '%s'", desktopFilePath.toLocal8Bit().constData()));
+            emit execFailed(tr("failed to exec '%s'", dtf.value(QStringLiteral("exec")).toString().toLocal8Bit().constData()));
+    } else {
+        emit execFailed(tr("failed to load desktop file '%s'", desktopFilePath.toLocal8Bit().constData()));
+    }
 }
 
 void LauncherModel::openSubmenu(QString title)

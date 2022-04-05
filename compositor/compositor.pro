@@ -1,6 +1,6 @@
 QT += gui qml quick
 CONFIG += link_pkgconfig
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++17
 TARGET = ../grefsen
 
 SOURCES += *.cpp
@@ -11,7 +11,7 @@ INCLUDEPATH += /usr/include/glib-2.0 /usr/lib/glib-2.0/include
 
 OTHER_FILES = \
     qml/main.qml \
-    qml/Screen.qml \
+    qml/Output.qml \
     qml/Chrome.qml
 
 RESOURCES += grefsen.qrc

@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtGraphicalEffects 1.15
-import Grefsen 1.0
+import QtQuick
+import Qt5Compat.GraphicalEffects
+import Grefsen
 
 /*!
     A panel which slides out from the left edge of the screen.

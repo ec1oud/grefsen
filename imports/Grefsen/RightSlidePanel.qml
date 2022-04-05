@@ -1,5 +1,5 @@
-import QtQuick 2.1
-import QtGraphicalEffects 1.0
+import QtQuick
+import Qt5Compat.GraphicalEffects
 
 Flickable {
     id: root

@@ -16,11 +16,12 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtWayland.Compositor 1.15
-import QtGraphicalEffects 1.15
-import com.theqtcompany.wlcompositor 1.0
+import QtQuick
+import QtQuick.Window
+import QtWayland.Compositor
+import QtWayland.Compositor.XdgShell
+import Qt5Compat.GraphicalEffects
+import com.theqtcompany.wlcompositor
 
 StackableItem {
     id: rootChrome
@@ -305,7 +306,7 @@ StackableItem {
         }
 
         onWidthChanged: {
-            valid =  !surface.cursorSurface && surface.size.width > 0 && surface.size.height > 0
+            valid =  !surface.cursorSurface && surface.bufferSize.width > 0 && surface.bufferSize.height > 0
         }
 
         onValidChanged: if (valid) {

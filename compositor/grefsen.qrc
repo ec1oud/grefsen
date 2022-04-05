@@ -3,7 +3,7 @@
         <file>images/background.jpg</file>
         <file>qml/main.qml</file>
         <file>qml/Keyboard.qml</file>
-        <file>qml/Screen.qml</file>
+        <file>qml/Output.qml</file>
         <file>qml/Chrome.qml</file>
         <file>fonts/FontAwesome.otf</file>
         <file>images/grefsen-logo-on-silhouette.png</file>

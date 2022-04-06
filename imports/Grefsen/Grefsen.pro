@@ -8,12 +8,10 @@ PKGCONFIG += glib-2.0 Qt5Xdg
 
 SOURCES += \
     plugin.cpp \
-    hoverarea.cpp \
     iconprovider.cpp \
     launchermodel.cpp
 
 HEADERS += \
-    hoverarea.h \
     iconprovider.h \
     launchermodel.h
 

@@ -1,5 +1,5 @@
-import QtQuick 2.1
-import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtGraphicalEffects 1.15
 import Grefsen 1.0
 
 /*!
@@ -82,11 +82,9 @@ Flickable {
                 spacing: 6
             }
         }
-        HoverArea {
-            anchors.fill: parent
-            anchors.rightMargin: -10
-            onEntered: root.open()
-            onExited: root.close()
+        HoverHandler {
+            margin: 10
+            onHoveredChanged: if (hovered) root.open(); else root.close()
         }
     }
 }

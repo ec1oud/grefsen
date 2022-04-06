@@ -1,14 +1,18 @@
-import QtQuick 2.5
-import QtQuick.Controls 2.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import Grefsen 1.0
 
-HoverArea {
+Item {
     id: root
     width: 200
 //    height: Math.min(1000, list.implicitHeight)
     height: 500
     signal close
-    onExited: root.close()
+
+    HoverHandler {
+        id: hover
+        onHoveredChanged: if (!hovered) root.close()
+    }
 
     Rectangle {
         anchors.fill: parent

@@ -6,7 +6,6 @@
 #include <QQmlExtensionPlugin>
 #include <QtQml>
 
-#include "hoverarea.h"
 #include "iconprovider.h"
 #include "launchermodel.h"
 
@@ -63,7 +62,6 @@ public:
     virtual void registerTypes(const char *uri) {
         qCDebug(lcRegistration) << uri;
         Q_ASSERT(uri == QLatin1String(ModuleName));
-        qmlRegisterType<HoverArea>(uri, 1, 0, "HoverArea");
         qmlRegisterSingletonType(ModuleName, 1, 0, "Env", environmentSingletonProvider);
         qmlRegisterSingletonType(ModuleName, 1, 0, "LauncherModel", launcherModelSingletonProvider);
     }

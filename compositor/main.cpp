@@ -279,6 +279,7 @@ int main(int argc, char *argv[])
         QScreen * screen = *screenIter;
         window->setScreen(screen);
         if (windowed) {
+            window->resize(1920, 1080);
             window->showNormal();
         } else {
             window->setGeometry(screen->geometry());
@@ -286,6 +287,8 @@ int main(int argc, char *argv[])
         }
         ++windowIter;
         ++screenIter;
+        if (windowed)
+            break;
     }
 
     return app.exec();
